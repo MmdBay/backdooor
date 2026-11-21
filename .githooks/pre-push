@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#
+# When pushing v* tags, queue a background local release publish (make release + gh).
+# Ordinary branch pushes are ignored — multi-arch release is too heavy for every push.
+set -euo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+post_push="$root/.githooks/post-push"
+tags=()
+
+while read -r local_ref _local_sha _remote_ref _remote_sha; do
+  case "$local_ref" in
+    refs/tags/v*)
+      tags+=("${local_ref#refs/tags/}")
+      ;;
+  esac
+done
+
+if [ "${#tags[@]}" -eq 0 ]; then
+  exit 0
+fi
+
+if [ ! -x "$post_push" ]; then
+  echo "pre-push: missing executable $post_push" >&2
+  exit 1
+fi
+
+for tag in "${tags[@]}"; do
+  echo "pre-push: will publish $tag in the background after push (log: \${BACKPACK_PUBLISH_LOG:-\$HOME/.cache/backpack-publish.log})"
+  nohup "$post_push" "$tag" >/dev/null 2>&1 &
+done
+
+exit 0

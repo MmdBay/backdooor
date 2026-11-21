@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# Run a local release publish after a version tag reaches origin.
+# Git has no post-push hook; .githooks/pre-push starts this script in the
+# background when you push refs/tags/v*.
+#
+#   .githooks/post-push <tag>
+set -euo pipefail
+
+tag="${1:?usage: post-push <tag>}"
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+log="${BACKPACK_PUBLISH_LOG:-$HOME/.cache/backpack-publish.log}"
+mkdir -p "$(dirname "$log")"
+
+{
+  echo "=== $(date -Is) post-push $tag ==="
+  cd "$root"
+  tag_on_remote=false
+  for _ in $(seq 1 120); do
+    if git ls-remote --exit-code origin "refs/tags/$tag" >/dev/null 2>&1; then
+      tag_on_remote=true
+      break
+    fi
+    sleep 2
+  done
+  if [ "$tag_on_remote" != true ]; then
+    echo "post-push: tag $tag never appeared on origin — skip publish (push failed or timed out)" >&2
+    exit 1
+  fi
+  exec "$root/scripts/publish-release.sh" "$tag"
+} >>"$log" 2>&1

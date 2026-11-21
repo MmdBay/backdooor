@@ -13,7 +13,7 @@ GOTAGS         := netgo,osusergo
 # is CGO-free, as it was before PCK moved to paqet.
 PCAP_ENV = $(if $(wildcard $(LIBPCAP_PREFIX)/include/pcap.h),CGO_ENABLED=1 CGO_CFLAGS="-I$(LIBPCAP_PREFIX)/include" CGO_LDFLAGS="-L$(LIBPCAP_PREFIX)/lib -lpcap",CGO_ENABLED=0)
 
-.PHONY: all build install uninstall clean tidy run vendor release-linux release version sbom reproducible check libpcap
+.PHONY: all build install uninstall clean tidy run vendor release-linux release publish version sbom reproducible check libpcap
 
 all: build
 
@@ -101,6 +101,11 @@ release: version release-linux
 	$(MAKE) sbom
 	@echo "Release assets ready in ./release"
 	@cat release/SHA256SUMS
+
+# publish builds (make release) and uploads to GitHub Releases. Fork maintainers
+# normally trigger this by pushing a v* tag with core.hooksPath=.githooks enabled.
+publish:
+	scripts/publish-release.sh
 
 # sbom writes what the release was actually built from.
 #

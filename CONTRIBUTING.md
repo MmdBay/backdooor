@@ -129,6 +129,37 @@ the arguments its view really passes.
   runs the previous release against this one in both directions. Protocol
   version negotiation exists (`internal/tunnel/l3/version.go`); use it.
 
+## Local release publish (fork, no CI)
+
+This fork (`MmdBay/backpack`) does not use GitHub Actions for releases. A push of
+an annotated `v*` tag on your machine builds every architecture (`make release`),
+signs `SHA256SUMS`, and uploads assets with `gh`.
+
+**One-time setup**
+
+```bash
+git config core.hooksPath .githooks   # in this repository only
+chmod +x .githooks/pre-push .githooks/post-push scripts/publish-release.sh
+export RELEASE_SIGNING_KEY='…'        # base64 private key from make release-key
+# or: export RELEASE_SIGNING_KEY_FILE=$HOME/.config/backpack/release-signing-key
+gh auth login
+# zig on PATH — see scripts/publish-release.sh if missing
+```
+
+**Cut a release**
+
+1. Set `Version` in `internal/app/app.go` to match the tag (e.g. `v2.0.1`).
+2. Commit, then `git tag -a v2.0.1 -m "v2.0.1"`.
+3. `git push origin main` (if needed), then `git push origin v2.0.1`.
+
+The `pre-push` hook only reacts to `refs/tags/v*`; branch pushes do not build.
+After the tag push, publish runs in the background (log:
+`~/.cache/backpack-publish.log`). Run by hand anytime: `make publish` or
+`scripts/publish-release.sh v2.0.1`.
+
+Never commit the private signing key. The public half belongs in
+`internal/app.ReleasePublicKey`.
+
 ## Opening a change
 
 - One thing per pull request. A refactor and a fix in one branch is a branch
