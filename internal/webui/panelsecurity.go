@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+// Panel HTTP hardening helpers (cookies, CSRF, login body bound, Secure flag).
+//
 // maxLoginBody bounds the login form. ParseForm reads the whole body into
 // memory before anything looks at it, and the one endpoint that runs before
 // any authentication is the one where that matters: two fields of a few dozen

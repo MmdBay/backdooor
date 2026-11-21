@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// Bot safety: per-admin rate limit + short-lived confirm tokens.
+//
 // Two guards stand between a button and something irreversible.
 //
 // A rate limit, because a phone in a pocket taps buttons, and because Restart

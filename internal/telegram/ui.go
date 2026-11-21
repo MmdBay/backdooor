@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// Reply/keyboard builders — every command/button becomes one editable reply.
+//
 // The screen layer.
 //
 // Every button press and every command resolves to exactly one reply: a body, a

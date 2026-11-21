@@ -25,6 +25,10 @@ import (
 	"github.com/backpack/backpack/internal/utils/network"
 )
 
+// Full Health Check (CLI / panel modal): host + path + per-tunnel probes.
+// Returns []Check; does not restart anything. Carrier-specific helpers live in
+// pckcheck / grecheck / directhealth / diagnose_path / throughputhealth.
+//
 // CheckLevel is how a diagnostic turned out.
 type CheckLevel int
 

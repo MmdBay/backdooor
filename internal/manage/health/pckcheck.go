@@ -10,6 +10,8 @@ import (
 	"github.com/backpack/backpack/internal/utils/network"
 )
 
+// Diagnose helpers for paqet/PCK (libpcap + iptables RST guards).
+//
 // What a PCK tunnel needs from the machine.
 //
 // It has no network interface to look for: it is paqet's engine, which captures

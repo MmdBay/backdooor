@@ -6,6 +6,8 @@ import (
 	"github.com/backpack/backpack/internal/manage"
 )
 
+// Showcase JSON + image routes (cache only; KickShowcase refreshes in background).
+//
 // handleShowcase answers what the overview's showcase box draws: the link,
 // the title and the version of the image, or an empty object when there is
 // nothing to draw. It reads the cache only, and starts a refresh when the

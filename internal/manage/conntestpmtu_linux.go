@@ -7,6 +7,8 @@ import (
 	"syscall"
 )
 
+// Connection Test (Linux): set DF on UDP for path-MTU probes (see conntestbest).
+//
 // ctDontFragment makes a UDP socket send with DF set and never fragment
 // locally, so a datagram too big for the path is lost (or refused with
 // EMSGSIZE) rather than split — which is what a path-MTU probe measures.

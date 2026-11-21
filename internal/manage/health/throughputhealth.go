@@ -11,6 +11,8 @@ import (
 	"github.com/backpack/backpack/internal/metrics"
 )
 
+// Watchdog/alert signal from byte counters (stall while Connected stays true).
+//
 // Health defined by what a tunnel is carrying, not by whether it is running.
 //
 // The watchdog's question has always been "is the control channel up". The

@@ -2,4 +2,6 @@
 // and the tunnel, with buffers from a pool, kernel splice where Linux allows it
 // (zero-copy, behind a flag), the PROXY protocol header when the operator asks
 // for the client's address, and per-port usage for the panel.
+//
+// Called from reverse transports after pairing; not the admin webui handlers.
 package handlers

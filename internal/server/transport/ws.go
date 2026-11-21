@@ -38,6 +38,8 @@ type wsGen struct {
 	serving sync.Once
 }
 
+// WsTransport is the Iran WebSocket reverse server (ws / wss). Generation
+// channels live on wsGen; peerauth uses WS bearer forms in peerauth.go.
 type WsTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.

@@ -15,17 +15,16 @@ import (
 // that already runs Backpack, and one command that installs Backpack and
 // applies the link, for a kharej that does not.
 
-// InstallCommand is the one line that installs Backpack on a server and builds
-// the tunnel in link there. It is run as root on the kharej; install.sh hands
-// what follows it to the installed binary (see the end of install.sh).
+// InstallCommand is the one line that builds the tunnel from link on a kharej
+// that already has a signed BackPack binary. Fork builds never print curl|bash
+// of unsigned install.sh — install the verified release first, then apply.
 func InstallCommand(link string) string {
 	// The published release may predate managed HTTPS link support. Installing
 	// it here would replace the matching test build and lose the optional helpers.
 	if l, err := DecodeShareLink(link); err == nil && managedTransport(l.Tr) {
 		return ""
 	}
-	return fmt.Sprintf("bash <(curl -fsSL https://raw.githubusercontent.com/%s/%s/main/install.sh) link apply '%s'",
-		app.RepoOwner, app.RepoName, link)
+	return fmt.Sprintf("sudo %s link apply '%s'", app.BinPath, link)
 }
 
 // printLinkBlock prints the two ways to build the kharej from link. menuPath
@@ -43,7 +42,7 @@ func printLinkBlock(link, menuPath string) {
 		tui.Info("Install The Same BackPack Build On Kharej With BP_HELPERS=naive,xray, Then Apply:")
 		fmt.Println(tui.Color(tui.Bold+tui.White, "sudo backpack link apply '"+link+"'"))
 	} else {
-		tui.Info("Install BackPack And Set Up This Tunnel (Kharej Without BackPack, As Root):")
+		tui.Info("On Kharej (signed BackPack already installed), apply this tunnel as root:")
 		fmt.Println(tui.Color(tui.Bold+tui.White, command))
 	}
 }

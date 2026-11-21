@@ -1,5 +1,8 @@
 // Package schedule manages recurring backpack jobs via the system crontab
 // (auto-refresh of tunnels and periodic Telegram reports).
+//
+// Writes marked crontab lines (app.AutoRefreshMarker / telegram marker); never
+// a separate daemon. EffectiveHours documents cron’s day-rounding footgun.
 package schedule
 
 import (

@@ -13,6 +13,8 @@ import (
 	"strings"
 )
 
+// Compact setup-link encoding (same ShareLink fields as v1; shorter paste).
+//
 // Setup links, format 2: the same settings as format 1 at half the
 // length.
 //

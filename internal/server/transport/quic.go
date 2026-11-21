@@ -51,6 +51,7 @@ type quicClaim struct {
 // a stream per forwarded flow. QUIC brings its own TLS 1.3, stream multiplexing,
 // congestion control and loss recovery, so there is no smux, no FEC and no
 // hand-tuning here — the protocol does what KCP needed a stack of settings for.
+// Shared cores: lifecycle + controlloop + pairloop; auth is QUIC/TLS + token.
 type QuicTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.

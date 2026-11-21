@@ -21,6 +21,8 @@ import (
 // KcpTransport is the client side of the KCP transport. It dials out to the
 // server over UDP and carries SMUX streams inside a reliable KCP session, so
 // the tunnel survives paths where a long-lived TCP connection would stall.
+// Shared cores: lifecycle, controlloop, poolmaintain (not peerauth MAC — KCP
+// has its own token handshake path).
 type KcpTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.

@@ -13,6 +13,8 @@ import (
 	"github.com/backpack/backpack/internal/tunnel/l3"
 )
 
+// Non-interactive `backpack link apply` (fresh install paste / fleet push).
+//
 // Building the kharej end from a setup link without a single question.
 //
 // The Iran wizard prints two things under its summary: the link, for a kharej

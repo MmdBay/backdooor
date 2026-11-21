@@ -10,6 +10,8 @@ import (
 	"github.com/backpack/backpack/internal/app"
 )
 
+// Cached “is a newer release out?” (menu / Telegram never block on GitHub).
+//
 // Background update checking.
 //
 // Both the menu and the Telegram bot want to say "a newer version is out", and

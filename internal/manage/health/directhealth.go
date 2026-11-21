@@ -7,6 +7,8 @@ import (
 	"github.com/backpack/backpack/internal/manage/core"
 )
 
+// How AllHealth judges [l3]/direct roles (not reverse server/client labels).
+//
 // Is a direct tunnel up?
 //
 // The watchdog and the health screen both answer this from the kernel's table

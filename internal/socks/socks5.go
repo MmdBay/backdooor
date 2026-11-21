@@ -5,6 +5,9 @@
 // server reaching Telegram) tunnel through a peer that can: the peer runs the
 // SOCKS5 server bound to localhost, that port is exposed over the reverse
 // tunnel, and the origin dials the proxy through the tunnel.
+//
+// File map: socks5.go (server), dialer.go (client), policy.go (who may use it),
+// udpassociate.go (UDP ASSOCIATE). Used by localproxy, telegram relay, updaterelay.
 package socks
 
 import (

@@ -15,6 +15,7 @@ import (
 	"time"
 )
 
+// Connection Test: bulk transfer timing after echo soak (feeds the verdict table).
 const (
 	ctSpeedMagic    = "BP-SPEED/1\n"
 	ctSpeedAck      = "BP-SPEED/1 OK\n"

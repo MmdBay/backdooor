@@ -15,6 +15,8 @@ import (
 	"github.com/backpack/backpack/internal/manage"
 )
 
+// Multi-hop diagnosis when the bot cannot reach Telegram API.
+//
 // Relay diagnosis.
 //
 // When the bot fails, the error it surfaces is whatever the HTTP client saw —

@@ -9,6 +9,8 @@ import (
 	"github.com/backpack/backpack/internal/socks"
 )
 
+// Update download via an online reverse tunnel’s SOCKS mapping (Iran → GitHub).
+//
 // Fetching an update through a tunnel when there is no way out directly.
 //
 // The updater already tries the tunnel relay after a direct connection, but it

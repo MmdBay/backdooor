@@ -20,6 +20,8 @@ import (
 	"github.com/backpack/backpack/internal/app"
 )
 
+// Panel authorization choke point: Scope + API tokens + audit log.
+//
 // Who is allowed to do what, decided in one place.
 //
 // The panel had one password and one level of access. Anyone who could open it

@@ -9,6 +9,12 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// Control-channel holders and helpers shared by Iran-side transports.
+//
+// Sections: TCP keepalive on the control socket; sameHost for seat checks;
+// netControl / wsControl (locked Get/Set/Clear so accept vs restart never race);
+// clientSeat (one generation can re-seat without ending the run).
+
 // enableKeepAlive turns on TCP keepalive on a control connection so a peer that
 // dies without closing — a hard kill, or a path that blackholes under load —
 // eventually surfaces as a read error instead of a connection that hangs open

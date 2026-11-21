@@ -15,8 +15,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// The client half of the plain transports' peer handshake (see
-// network/peerauth.go and docs/adr/0006-plain-transports-prove-both-ends.md).
+// Client-side peer-auth wrappers around network.PeerGuard (ADR 0006).
+//
+// Crypto and seal/open live in utils/network/peerauth.go. This file only
+// speaks the control-channel claim: offer SG_ChanAuth (or legacy token),
+// interpret refusals / silent closes as "older Iran", and keep destinations
+// sealed under the session. Used by tcp / tcpmux / ws / wsmux / udp.
 
 // controlReply is the server's last answer to a control claim.
 type controlReply struct {

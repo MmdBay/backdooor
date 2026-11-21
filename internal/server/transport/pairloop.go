@@ -7,6 +7,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Generic user↔tunnel pairing loop (Iran side). Transport-specific announce /
+// discard / relay stay as callbacks; slot release + timeout + teardown do not.
+//
 // The half of a transport's lifecycle that has actually leaked, written once.
 //
 // Seven transports on this side repeat accept → pair → admit → relay → release

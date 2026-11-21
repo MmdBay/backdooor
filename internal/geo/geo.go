@@ -4,7 +4,7 @@
 // and the panel imports the bot — so the bot cannot reach back into the panel
 // for it. Sharing the lookup also shares the cache, which matters: these are
 // free public APIs with rate limits, and two components asking the same
-// question separately is the way to get throttled.
+// question separately is the way to get throttled. Lookup + in-process cache only.
 package geo
 
 import (

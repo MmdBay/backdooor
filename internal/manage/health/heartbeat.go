@@ -10,6 +10,8 @@ import (
 	"github.com/backpack/backpack/internal/manage/core"
 )
 
+// Monitor liveness file (Diagnose / panel can say “watchdog silent”).
+//
 // Something that notices when the watchdog is not running.
 //
 // The monitor service is what watches the tunnels, and nothing watched it. Its

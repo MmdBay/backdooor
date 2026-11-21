@@ -23,6 +23,9 @@ import (
 	"github.com/backpack/backpack/internal/tunnel/l3"
 )
 
+// Setup-link encode/decode so both ends get matching paired fields.
+// See sharelinkv2.go for the v2 peer_auth=required payload shape.
+//
 // Handing a tunnel's settings to the other server.
 //
 // Everything in a tunnel is paired. The token, the transport, the port, the

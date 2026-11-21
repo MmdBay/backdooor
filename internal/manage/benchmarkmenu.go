@@ -7,6 +7,8 @@ import (
 	"github.com/backpack/backpack/internal/tui"
 )
 
+// TUI “Link Test” (uses benchmark.go PathQuality). Client tunnels only.
+//
 // LinkTest measures the link to the far server and recommends a transport for
 // it. It runs on the side that dials out — the client — because that is the
 // side that has a peer address to measure against.

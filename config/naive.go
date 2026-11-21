@@ -36,6 +36,8 @@ func (n NaiveClientConfig) NaiveConnections() int {
 	return n.Connections
 }
 
+// Enabled reports whether any Naive client helper key is set. Empty table =
+// helper off; the reverse engine then dials Iran loopback directly.
 func (n NaiveClientConfig) Enabled() bool { return n != (NaiveClientConfig{}) }
 
 // NaiveServerConfig owns a compatible sing-box HTTP/2 inbound. Its generated
@@ -55,6 +57,7 @@ type NaiveServerConfig struct {
 	Key string `toml:"key"`
 }
 
+// Enabled reports whether any Naive server helper key is set.
 func (n NaiveServerConfig) Enabled() bool { return n != (NaiveServerConfig{}) }
 
 // XrayClientConfig wraps the TCP reverse connection with an official Xray
@@ -82,6 +85,7 @@ type XrayClientConfig struct {
 	ShortID string `toml:"short_id"`
 }
 
+// Enabled reports whether any Xray client helper key is set.
 func (x XrayClientConfig) Enabled() bool { return x != (XrayClientConfig{}) }
 
 // XrayServerConfig accepts one VLESS account and permits only the existing
@@ -113,4 +117,5 @@ type XrayServerConfig struct {
 	ShortID string `toml:"short_id"`
 }
 
+// Enabled reports whether any Xray server helper key is set.
 func (x XrayServerConfig) Enabled() bool { return x != (XrayServerConfig{}) }

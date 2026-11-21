@@ -56,6 +56,9 @@ type udpGen struct {
 	seat clientSeat
 }
 
+// UdpTransport is the Iran plain-UDP reverse server. Datagram flows (not
+// pairloop TCP pairing); peerauth still seals destinations on the control path.
+// udpPayloadQueue / idleForward constants above bound memory and flow lifetime.
 type UdpTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.
@@ -75,6 +78,7 @@ type UdpTransport struct {
 	peer peerSession
 }
 
+// UdpConfig is listen-side knobs for transport = "udp".
 type UdpConfig struct {
 	BindAddr    string
 	Token       string

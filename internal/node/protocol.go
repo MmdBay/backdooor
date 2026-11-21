@@ -5,9 +5,13 @@ import (
 	"errors"
 )
 
-// The operations a node will perform. This list is the security boundary: a
-// node executes these and refuses everything else, so widening it is the one
-// change in this package that has to be argued for rather than made.
+// Allowed Execute ops (one request → one JSON answer). Widening this list is
+// the change that needs an argument. Note (package doc): with panel-held SSH
+// root this is no longer the fleet security boundary — it is still the protocol
+// shape and what `node exec` will refuse.
+//
+// The operations a node will perform: a node executes these and refuses
+// everything else.
 //
 // Note what is absent. There is no operation that runs a command, reads a path,
 // installs a binary, or removes a tunnel. The first three would turn the

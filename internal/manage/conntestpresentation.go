@@ -9,6 +9,7 @@ import (
 	"github.com/backpack/backpack/internal/tui"
 )
 
+// Connection Test: TUI stage/startup presentation helpers (not the live board).
 func ctMenuStage(out io.Writer, number, title, detail string) {
 	fmt.Fprintf(out, "%s\n  %s %s\n  %s\n",
 		tui.Color(tui.Gray, strings.Repeat("─", 55)),

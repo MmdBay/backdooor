@@ -1,6 +1,9 @@
 // Package optimize applies kernel/network tuning for high-throughput,
 // low-latency tunnels. It is used by the "Optimize" menu item and applied
 // automatically behind the Best Performance preset.
+//
+// Also owns EngineStartupTuning() — the single table cmd.ApplyTCPTuning reads
+// so tunnel start cannot disagree with Optimize (see ip_local_port_range history).
 package optimize
 
 import (

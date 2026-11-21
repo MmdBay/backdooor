@@ -6,6 +6,9 @@
 // It is optional and off by default. The operator picks the port — nothing is
 // assumed — and maps a forwarded port to 127.0.0.1:<that port> like any other
 // backend, so the tunnel engine is untouched.
+//
+// File map: localproxy.go (config + Run), httpproxy.go (HTTP CONNECT path);
+// SOCKS5 implementation lives in internal/socks.
 package localproxy
 
 import (

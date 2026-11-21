@@ -10,7 +10,8 @@
 //
 // The engine enforces it (cmd/quota.go): it watches the total while it runs
 // and ends the tunnel the moment the limit is reached, and does not start it
-// again until the limit is raised. The panel writes the file and reads it back.
+// again until the limit is raised. The panel writes the file and reads it back
+// (manage/quotaweb.go). This package is Load/Save/Reached only — no process I/O.
 package quota
 
 import (

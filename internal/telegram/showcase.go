@@ -14,6 +14,8 @@ import (
 	"github.com/backpack/backpack/internal/manage"
 )
 
+// Weekly Friday showcase push (same manage.Showcase cache as the panel).
+//
 // The showcase, once a week in the bot.
 //
 // The same image and link the panel's overview shows (see manage/showcase.go)

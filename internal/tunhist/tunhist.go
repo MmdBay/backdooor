@@ -5,6 +5,7 @@
 // "what happened this week" — how much a tunnel carried per day, and what
 // fraction of the time it was actually up. The sampler runs inside
 // backpack-monitor, the process that is always on; the panel only reads.
+// Companion: uptime.go (up/down fraction helpers).
 //
 // Two resolutions bound the file: five-minute samples for the last day, and
 // hourly buckets for the last thirty. Byte counts are stored cumulative, the

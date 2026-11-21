@@ -15,8 +15,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// The server half of the plain transports' peer handshake (see
-// network/peerauth.go and docs/adr/0006-plain-transports-prove-both-ends.md).
+// Server-side peer-auth wrappers around network.PeerGuard (ADR 0006).
+//
+// Crypto lives in utils/network/peerauth.go. Here: admitAuthClaim (SG_ChanAuth),
+// refuseLegacyClaim (pre-v2 / too-old clients), WS bearer variants, and
+// authAck (mux version only — pool tag never crosses the wire).
 
 // admitAuthClaim completes the handshake a client opened with SG_ChanAuth on a
 // stream (tcp, tcpmux, udp's control port), answering on conn. It returns the

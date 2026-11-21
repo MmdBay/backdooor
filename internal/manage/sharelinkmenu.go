@@ -7,6 +7,8 @@ import (
 	"github.com/backpack/backpack/internal/tui"
 )
 
+// TUI Setup Link show/paste screens → sharelink codec (paired settings).
+//
 // The setup link, from the operator's side.
 //
 // Everything below this was already built: the codec, the mirror that turns one

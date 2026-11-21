@@ -6,4 +6,6 @@
 //
 // It is below the engines: they decide what a tunnel is and when it restarts,
 // and build on what is here.
+//
+// Hot files: peerauth.go (ADR 0006), noise*, kcp*, pck*, spoof*, quic*, outbound*.
 package network

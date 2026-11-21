@@ -14,6 +14,8 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+// Panel → far server transport: dial SSH, run `backpack node exec -`, TOFU host key.
+//
 // Reaching a managed server over its own SSH.
 //
 // The enrolment channel this replaces asked a lot of the operator: open a port

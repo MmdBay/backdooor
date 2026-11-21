@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 )
 
+// Panel upload path for offline install (same FindLocalUpdate / ApplyLocalUpdate as CLI).
+//
 // Install From A File, fed from the browser.
 //
 // The menu finds an archive the operator scp'd into /root. The panel's

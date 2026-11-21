@@ -13,6 +13,7 @@ import (
 	"time"
 )
 
+// Connection Test: multi-path suite state (per-address results, not protocol verdicts).
 const connTestResolveWait = 5 * time.Second
 
 var connTestPathCheckWait = 12 * time.Second

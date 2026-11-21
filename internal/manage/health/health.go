@@ -10,6 +10,10 @@ import (
 	"github.com/backpack/backpack/internal/metrics"
 )
 
+// Per-tunnel live state (panel / bot / watchdog). Prefer metrics.Connected
+// over ss — datagram transports hold no TCP sockets. manage re-exports via
+// health_alias.go.
+
 // Health describes how a single tunnel is doing right now.
 type Health struct {
 	Name      string

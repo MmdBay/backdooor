@@ -16,15 +16,17 @@ import (
 	"github.com/backpack/backpack/internal/node"
 )
 
+// Fleet UI handlers → internal/node (SSH registry). Panel *does* store root
+// credentials (sealed); the outdated “no login” wording below meant “no
+// separate agent login” — see node package doc for the real cost.
+//
 // Managed servers.
 //
-// A node is a server that has been told, once, which panel manages it, and has
-// been connecting outward to that panel ever since. From here it looks like a
-// place a tunnel can be put: the fleet screen lists them, and the setup form
-// can build both ends of a tunnel in one submission instead of leaving the
-// operator to repeat every paired value on a second machine by hand.
-//
-// The panel holds no login for any of them. See internal/node.
+// A node is a server enrolled in the fleet: from here it looks like a place a
+// tunnel can be put. The fleet screen lists them, and the setup form can build
+// both ends of a tunnel in one submission instead of repeating paired values
+// on a second machine by hand. Reachability is panel→SSH outbound. See
+// internal/node.
 
 // nodeInfoTTL is how long a server's own account of itself stands for.
 //

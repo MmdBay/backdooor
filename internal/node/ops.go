@@ -16,6 +16,9 @@ import (
 	"github.com/backpack/backpack/internal/sysstat"
 )
 
+// Far-side Execute handlers (OpHello / OpApply / …). Panel sends forms; this
+// host validates against local facts and applySpec/reconciles.
+//
 // ApplyRequest is the complete desired state of one tunnel.
 //
 // It carries the panel's own setup form rather than a rendered config file. The

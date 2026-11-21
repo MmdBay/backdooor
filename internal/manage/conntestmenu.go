@@ -11,6 +11,8 @@ import (
 	"github.com/backpack/backpack/internal/tui"
 )
 
+// TUI entry for Connection Test (Iran/kharej role pick → conntest.go engine).
+//
 // ConnectionTest is main-menu option 0, Connection Test: which transports work between
 // this server and another. See conntest.go.
 func ConnectionTest() {

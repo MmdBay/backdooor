@@ -18,6 +18,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// WsTransport is the kharej WebSocket reverse client (ws / wss via Mode).
+// Same lifecycle/pool/peerauth as TCP; wire is gorilla websocket + controlwire.WS.
 type WsTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.
@@ -28,6 +30,8 @@ type WsTransport struct {
 	// server sends must open under it. nil against an older server.
 	peer peerSession
 }
+
+// WsConfig is dial-side knobs from [client] for ws/wss (incl. EdgeIP / SimpleAuth).
 type WsConfig struct {
 	RemoteAddr string
 	// Endpoints rotates through the server addresses (primary + fallbacks)

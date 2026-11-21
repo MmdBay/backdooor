@@ -12,6 +12,8 @@ import (
 	"github.com/backpack/backpack/internal/utils/network"
 )
 
+// IP spoof reachability tester (menu “IP Spoofing Tester”). Sibling: iprange.go.
+//
 // The tester answers one question: starting from host A, can a packet whose
 // source IP is forged to X actually cross the network and reach host B? Run it
 // over a list, range or CIDR of candidate IPs, and it reports which ones arrive

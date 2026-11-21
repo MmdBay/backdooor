@@ -15,6 +15,9 @@ import (
 	"github.com/backpack/backpack/internal/utils/network"
 )
 
+// Interactive reverse-tunnel setup wizard (Iran first, then kharej link).
+// Writes TOML + systemd via the same apply path as the panel; not a second schema.
+//
 // The reverse wizard, in the direct wizard's style.
 //
 // The Iran server is set up first. Its questions are short and in the order

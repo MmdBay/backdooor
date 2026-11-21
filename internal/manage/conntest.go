@@ -41,6 +41,9 @@ import (
 	"golang.org/x/net/proxy"
 )
 
+// Connection Test engine (Iran judge + kharej peers). UI wrappers: conntestmenu /
+// conntestweb / conntestboard / … — this file owns the throwaway tunnels + verdict.
+//
 // Connection Test: which transports survive the path between two servers.
 //
 // Reported from the field: a reverse tunnel between one Iran server and one

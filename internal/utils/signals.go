@@ -2,15 +2,21 @@ package utils
 
 import "github.com/gorilla/websocket"
 
-const (
-	SG_HB     byte = iota // for heartbeat
-	SG_Chan               // for channel, req a new conn
-	SG_Ping               // for ping
-	SG_Closed             // for closed channel
-	SG_TCP                // TCP Transport ID
-	SG_UDP                // TCP Transport ID
-	SG_RTT                // For RTT measurment
+// Control-channel signal bytes (one byte on the wire). Shared by every reverse
+// transport; values are iota order and must never be renumbered — old peers
+// decode by numeric identity. See controlwire and network/peerauth.go.
 
+const (
+	// --- Classic control signals --------------------------------------------
+	SG_HB     byte = iota // heartbeat / liveness
+	SG_Chan               // request a new pool connection (legacy seat)
+	SG_Ping               // ping
+	SG_Closed             // peer is closing the control channel
+	SG_TCP                // TCP transport id (legacy)
+	SG_UDP                // UDP transport id (legacy)
+	SG_RTT                // RTT measurement
+
+	// --- Pool nonce handshake (pre–peer-auth era) ---------------------------
 	// SG_ChanV2 opens a control channel that authorises pool connections by a
 	// per-run nonce instead of by source address. It is a separate signal
 	// rather than a flag inside the old one so that a server which predates it
@@ -21,6 +27,7 @@ const (
 	// out when the control channel was established.
 	SG_Pool
 
+	// --- Explicit refusal (replaces silent EOF on bad handshake) ------------
 	// SG_Refused answers a control handshake the server will not accept,
 	// carrying a short reason.
 	//

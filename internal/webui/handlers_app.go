@@ -8,6 +8,9 @@ import (
 	"github.com/backpack/backpack/internal/manage"
 )
 
+// App chrome + release channel: PWA manifest/icons (unauthenticated static) and
+// updater channel GET/POST (same setting as CLI Update → Release channel).
+//
 // handleChannel reads (GET) or switches (POST) the release channel the
 // updater follows — the same setting as the CLI's Update → Release channel.
 func (s *server) handleChannel(w http.ResponseWriter, r *http.Request) {

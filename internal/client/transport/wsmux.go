@@ -16,6 +16,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// WsMuxTransport is kharej WebSocket + smux (wsmux / wssmux). Many streams
+// share one WS; peerauth still seals destinations on the control channel.
 type WsMuxTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.
@@ -27,6 +29,8 @@ type WsMuxTransport struct {
 	// server sends must open under it. nil against an older server.
 	peer peerSession
 }
+
+// WsMuxConfig is dial-side knobs for wsmux/wssmux (smux windows + WS auth).
 type WsMuxConfig struct {
 	RemoteAddr string
 	// Endpoints rotates through the server addresses (primary + fallbacks)

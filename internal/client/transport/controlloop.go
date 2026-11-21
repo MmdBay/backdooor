@@ -11,6 +11,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Client control-channel loop (one copy for every reverse transport).
+//
 // controlLoop serves one generation's control channel on the client side: it
 // dials a pool connection whenever the server asks for one, answers the
 // server's probes, notices a server that has gone quiet, and says goodbye —

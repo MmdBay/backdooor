@@ -22,30 +22,28 @@ import (
 
 var logger = utils.NewLogger("info")
 
-// main has two modes:
+// main is the process entry for every BackPack role. One binary; the argv
+// shape picks the role. Order of the branches below is load-bearing:
+// subcommands that own their own argv must run before flag.Parse, or the
+// flag package treats "node" / "check" as unknown flags.
 //
-//   - Engine mode:  `backpack -c /etc/backpack/<name>.toml`
-//     Runs a single tunnel (server or client). This is what the systemd
-//     units execute. Behaviour is identical to the original engine.
+// Roles:
 //
-//   - Menu mode:    `backpack`  (no arguments)
-//     Opens the interactive management CLI on the VPS.
+//   - Engine:   `backpack -c /etc/backpack/<name>.toml` — one tunnel (systemd)
+//   - Menu:     `backpack` with no args — interactive manage CLI on the VPS
+//   - Panel:    `-webui` / `-monitor` / `-proxy` — long-lived control services
+//   - One-shot: `-v`, `-restart-all`, `-telegram-report`, plus cli subcommands
 func main() {
-	// Handled before the flags, because it is a subcommand with flags of its
-	// own: `backpack node setup --panel ... --key ...`. The flag package would
-	// stop at "node" and report the rest as unknown.
+	// --- Fleet far-side (`backpack node …`) — before flag.Parse -------------
+	// Used to install an agent; now only `node exec` over SSH. See nodecmd.go.
 	if len(os.Args) > 1 && os.Args[1] == "node" {
 		runNode(os.Args[2:])
 		return
 	}
 
-	// The non-interactive commands, for the same reason and in the same place:
-	// they are subcommands with arguments of their own, and the flag package
-	// would stop at the first one and report the rest as unknown.
-	//
-	// Everything they do is in internal/cli, which returns what to print and
-	// what to exit with rather than doing either — so the whole surface is
-	// testable without a process. This is the only part that needs one.
+	// --- Non-interactive CLI subcommands (`backpack check`, …) --------------
+	// Logic lives in internal/cli and returns Out/Err/Code so the surface is
+	// testable without spawning a process.
 	if len(os.Args) > 1 && cli.IsCommand(os.Args[1]) {
 		cli.EngineCheck = cmd.CheckConfigFile
 		if st, err := os.Stdout.Stat(); err == nil && st.Mode()&os.ModeCharDevice != 0 {
@@ -62,6 +60,7 @@ func main() {
 		os.Exit(r.Code)
 	}
 
+	// --- Flag-selected long-lived / one-shot modes --------------------------
 	configPath := flag.String("c", "", "path to a tunnel configuration file (TOML) — runs in engine mode")
 	showVersion := flag.Bool("v", false, "print the version and exit")
 	restartAll := flag.Bool("restart-all", false, "restart every configured tunnel and exit (used by the auto-refresh job)")
@@ -99,7 +98,7 @@ func main() {
 		return
 	}
 
-	// No config file -> interactive menu.
+	// --- Default: interactive menu, or engine if -c was given ---------------
 	if *configPath == "" {
 		menu.Run()
 		return

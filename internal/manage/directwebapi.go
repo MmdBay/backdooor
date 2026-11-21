@@ -19,6 +19,8 @@ import (
 	"github.com/backpack/backpack/internal/tunnel/paqet"
 )
 
+// Panel JSON create/edit for direct/[l3] (parallel to webapi.go for reverse).
+//
 // Creating a direct tunnel from the web panel.
 //
 // A separate type and a separate function from CreateTunnel, for the reason

@@ -9,6 +9,8 @@ import (
 	"github.com/backpack/backpack/internal/app"
 )
 
+// Rolling audit log of bot actions (who restarted what).
+//
 // A record of every action taken through the bot.
 //
 // The bot can now stop a tunnel, apply an update and roll the machine back to a

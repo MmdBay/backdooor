@@ -10,6 +10,8 @@ import (
 	"github.com/backpack/backpack/internal/tui"
 )
 
+// TUI Tunnel Metrics screen → metrics snapshots (real traffic, not Link Test probes).
+//
 // TunnelMetrics shows what each tunnel has actually carried.
 //
 // Unlike the Link Test, which probes the path, these numbers come from the

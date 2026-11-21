@@ -10,6 +10,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// Generation-scoped client fields live behind one lock (this file).
+//
 // A client transport rebuilds its state on every reconnect: Restart() swaps the
 // context, the control channel, the usage monitor and the counters while the
 // previous generation's goroutines are still winding down. Those goroutines are
@@ -18,7 +20,8 @@ import (
 // merely stale but undefined.
 //
 // clientState puts that generation-scoped state behind one lock so a reader
-// always sees a complete, consistent generation.
+// always sees a complete, consistent generation. Own() ties a conn's lifetime
+// to the generation context so a late dial cannot outlive a restart.
 
 // clientState holds everything Restart() replaces.
 type clientState struct {

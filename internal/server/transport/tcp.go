@@ -32,6 +32,9 @@ type tcpGen struct {
 	seat clientSeat
 }
 
+// TcpTransport is the Iran plain-TCP reverse server (and stealth when
+// TcpConfig.Stealth). Generation-scoped channels live on tcpGen, not here —
+// a field would outlive the run that created it.
 type TcpTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.
@@ -51,21 +54,25 @@ type TcpTransport struct {
 	peer peerSession
 }
 
+// TcpConfig is the listen-side knobs for TcpTransport (from [server] TOML).
 type TcpConfig struct {
-	BindAddr      string
-	Token         string
-	SnifferLog    string
-	Ports         []string
-	Nodelay       bool
-	Sniffer       bool
-	KeepAlive     time.Duration
-	Heartbeat     time.Duration // in seconds
-	ChannelSize   int
-	WebPort       int
-	AcceptUDP     bool
-	MSS           int
-	SO_RCVBUF     int
-	SO_SNDBUF     int
+	BindAddr   string
+	Token      string
+	SnifferLog string
+	// Ports are the user-facing forwards this Iran end exposes.
+	Ports     []string
+	Nodelay   bool
+	Sniffer   bool
+	KeepAlive time.Duration
+	// Heartbeat is how often the server emits a control-channel liveness byte.
+	Heartbeat   time.Duration // in seconds
+	ChannelSize int
+	WebPort     int
+	AcceptUDP   bool
+	MSS         int
+	SO_RCVBUF   int
+	SO_SNDBUF   int
+	// ProxyProtocol prefixes each forward with a PROXY header (backend must expect it).
 	ProxyProtocol bool
 	// MaxConnections caps simultaneous forwarded connections (0 = unlimited).
 	MaxConnections int

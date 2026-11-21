@@ -38,6 +38,8 @@ type wsMuxGen struct {
 	serving sync.Once
 }
 
+// WsMuxTransport is Iran WebSocket + smux (wsmux / wssmux). tunnelChannel
+// carries *smux.Session; pairing uses the shared pairloop.
 type WsMuxTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.

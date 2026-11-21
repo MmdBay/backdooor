@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// Inline UI to step alert thresholds (no free-text input).
+//
 // The alert settings, as a screen you can change rather than one you can read.
 //
 // /alerts used to print the thresholds and stop there; changing any of them

@@ -18,6 +18,8 @@ import (
 	"github.com/backpack/backpack/internal/tunnel/paqet"
 )
 
+// Interactive [l3]/direct wizard (carrier pick → write TOML + unit).
+//
 // The direct tunnel wizard.
 //
 // Nobody should have to write TOML. This asks the questions in the order the

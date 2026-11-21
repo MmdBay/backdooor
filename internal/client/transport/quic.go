@@ -22,6 +22,7 @@ import (
 // control stream for the signalling, and a stream per forwarded flow. QUIC
 // supplies the TLS 1.3, the multiplexing, the congestion control and the loss
 // recovery, so there is no smux and no KCP-style tuning to keep in step.
+// Shared cores: lifecycle + controlloop; auth is QUIC/TLS + token, not ADR 0006.
 type QuicTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.

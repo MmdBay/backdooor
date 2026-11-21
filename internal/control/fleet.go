@@ -7,6 +7,8 @@ import (
 	"github.com/backpack/backpack/internal/node"
 )
 
+// Process-wide node.Runner (SSH). No per-node listeners anymore.
+//
 // Fleet owns the connections to the managed servers.
 //
 // There is no lifetime to manage any more. The channel this replaces had a

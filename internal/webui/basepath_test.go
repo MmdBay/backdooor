@@ -106,8 +106,8 @@ func TestAnEmptyBasePathServesEverythingAsBefore(t *testing.T) {
 func TestABasePathIsGeneratedForAConfigThatHasNone(t *testing.T) {
 	for i := 0; i < 8; i++ {
 		p := randomPathSegment()
-		if len(p) < 12 {
-			t.Fatalf("generated %q — too short to be unguessable", p)
+		if len(p) < pathSecretLen {
+			t.Fatalf("generated %q — too short to be unguessable (want %d)", p, pathSecretLen)
 		}
 		if !validBasePath(p) {
 			t.Errorf("generated %q, which the panel would refuse to serve", p)

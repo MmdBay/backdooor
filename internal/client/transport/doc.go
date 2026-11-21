@@ -8,4 +8,13 @@
 // the control channel's loop (controlloop.go, over internal/controlwire), the
 // pool's size (poolmaintain.go), and the last hop to the backend (backend.go).
 // See docs/adr/0001-reverse-transport-generations.md.
+//
+// Shared-core file map (read these before any *mux / kcp / quic variant):
+//
+//	lifecycle.go   — generations + restart (one copy for all client transports)
+//	state.go       — locked per-generation fields (avoids races on reconnect)
+//	peerauth.go    — wraps network.PeerGuard for this side's handshakes
+//	controlloop.go — heartbeats / SG_* over controlwire
+//	poolmaintain.go / poolload.go — warm pool + growth under load
+//	tcp.go         — reference plain TCP (+ stealth); other files are wire shapes
 package transport

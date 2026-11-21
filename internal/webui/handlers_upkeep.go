@@ -339,7 +339,7 @@ func (s *server) handlePanelSelf(w http.ResponseWriter, r *http.Request) {
 		s.authMu.Lock()
 		defer s.authMu.Unlock()
 		var err error
-		c, err = UpdateConfig(func(c *Config) error { c.Password = randomDigits(8); return nil })
+		c, err = UpdateConfig(func(c *Config) error { c.Password = randomStrongSecret(passwordSecretLen); return nil })
 		if err != nil {
 			http.Error(w, "could not save", http.StatusInternalServerError)
 			return

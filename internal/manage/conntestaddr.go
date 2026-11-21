@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+// Connection Test: discover candidate public addresses on this host (no reachability claim).
+//
 // ConnTestAddress is a candidate, not a claim that Kharej can reach it. Only
 // the peer's coordinator check can establish that. Discovery does no HTTP
 // requests: an outbound IP echo can name a different server behind a tunnel.

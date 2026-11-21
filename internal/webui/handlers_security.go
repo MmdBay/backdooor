@@ -9,6 +9,9 @@ import (
 	"github.com/backpack/backpack/internal/manage"
 )
 
+// Login brute-force ceiling + related panel security endpoints.
+// Complements panelsecurity.go (cookies/CSRF) and access.go (scopes).
+//
 // --- login rate limiting -----------------------------------------------------
 
 // A wrong password already costs a one-second delay; this adds a ceiling: five

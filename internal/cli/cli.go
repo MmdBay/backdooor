@@ -25,6 +25,8 @@
 // diverge. What lives here is what a command line needs and a menu does not —
 // parsing arguments, choosing between human and machine output, and deciding
 // an exit code.
+//
+// Entry: IsCommand + Run(args)→Result. Sibling: proxy.go (proxy subcommands).
 package cli
 
 import (
@@ -84,6 +86,7 @@ const usage = `backpack — non-interactive commands
   backpack proxy disable | status [--json]
                                         the built-in proxy a tunnel's port forwards to
   backpack version [--json]
+  backpack self-update                  download the latest signed release and install it
 
 Run backpack with no arguments for the interactive menu.
 Exit codes: 0 ok, 1 failed, 2 usage, 3 not found, 4 unhealthy.
@@ -113,10 +116,37 @@ func Run(args []string) Result {
 		return runProxy(args[1:])
 	case "version":
 		return runVersion(args[1:])
+	case "self-update":
+		return runSelfUpdate(args[1:])
 	case "help", "-h", "--help":
 		return ok(usage)
 	}
 	return fail(CodeUsage, "unknown command %q\n\n%s", args[0], usage)
+}
+
+// applyUpdate is manage.ApplyUpdate; a var so tests can stub it.
+var applyUpdate = manage.ApplyUpdate
+
+func runSelfUpdate(args []string) Result {
+	if len(args) != 0 {
+		return fail(CodeUsage, "self-update takes no arguments\n")
+	}
+	if err := app.RefuseUpstreamTrust(); err != nil {
+		return fail(CodeFailed, "%v\n", err)
+	}
+	var log strings.Builder
+	err := applyUpdate(func(line string) {
+		log.WriteString(line)
+		log.WriteByte('\n')
+	})
+	out := log.String()
+	if err != nil {
+		if out != "" {
+			return Result{Out: out, Err: err.Error() + "\n", Code: CodeFailed}
+		}
+		return fail(CodeFailed, "%v\n", err)
+	}
+	return ok(out)
 }
 
 func runTunnel(args []string) Result {
@@ -495,7 +525,7 @@ func takeJSONFlag(args []string) (bool, []string) {
 // drifting — a command added below is routable immediately.
 func IsCommand(s string) bool {
 	switch s {
-	case "tunnel", "check", "version", "link", "proxy":
+	case "tunnel", "check", "version", "link", "proxy", "self-update":
 		return true
 	}
 	return false

@@ -1,5 +1,7 @@
 package telegram
 
+// en/fa copy table (English key → translation; missing falls back to English).
+//
 // What the bot writes, in the operator's language.
 //
 // The key of a translation is the English sentence itself. It costs a little

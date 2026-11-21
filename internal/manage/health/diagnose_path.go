@@ -12,6 +12,8 @@ import (
 	"github.com/backpack/backpack/internal/metrics"
 )
 
+// Path/MTU diagnostics for “online but carries nothing” failures.
+//
 // The two questions a tunnel could not answer about itself.
 //
 // A tunnel that connects and then carries nothing is the hardest failure in

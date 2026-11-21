@@ -5,11 +5,11 @@
 # بک‌پک 🎒
 
 <p align="center">
-  <a href="go.mod"><img alt="Go version" src="https://img.shields.io/github/go-mod/go-version/AminMGMT/BackPack?logo=go&label=Go"></a>
-  <a href="https://github.com/AminMGMT/BackPack/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/AminMGMT/BackPack?logo=github&label=release&color=blue"></a>
-  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/AminMGMT/BackPack?color=green"></a>
-  <a href="https://github.com/AminMGMT/BackPack/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/AminMGMT/BackPack?style=flat&logo=github&color=yellow"></a>
-  <a href="https://github.com/AminMGMT/BackPack/releases"><img alt="Total downloads across all releases" src="https://img.shields.io/github/downloads/AminMGMT/BackPack/total?logo=github&label=total%20downloads&color=orange"></a>
+  <a href="go.mod"><img alt="Go version" src="https://img.shields.io/github/go-mod/go-version/MmdBay/backpack?logo=go&label=Go"></a>
+  <a href="https://github.com/MmdBay/backpack/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/MmdBay/backpack?logo=github&label=release&color=blue"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/MmdBay/backpack?color=green"></a>
+  <a href="https://github.com/MmdBay/backpack/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/MmdBay/backpack?style=flat&logo=github&color=yellow"></a>
+  <a href="https://github.com/MmdBay/backpack/releases"><img alt="Total downloads across all releases" src="https://img.shields.io/github/downloads/MmdBay/backpack/total?logo=github&label=total%20downloads&color=orange"></a>
 </p>
 
 **بک‌پک** یک هستهٔ تونل با کارایی بالاست که کاملاً با **Go** نوشته شده و برای
@@ -45,7 +45,7 @@ IP Spoofing، SNI Spoofing و GRE هستند).
 </div>
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/AminMGMT/BackPack/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/MmdBay/backpack/main/install.sh)
 ```
 
 <div dir="rtl">
@@ -157,7 +157,7 @@ sudo backpack   →  2. Setup Kharej
 
   ```text
   Based on BackPack by Amin Mohammadi (AminMGMT)
-  https://github.com/AminMGMT/BackPack
+  https://github.com/MmdBay/backpack
   ```
 
 - **از نام خودت استفاده کن.** «BackPack»، نام و لوگو همراه کد لایسنس نشده‌اند —

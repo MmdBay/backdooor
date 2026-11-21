@@ -12,6 +12,8 @@ import (
 	"time"
 )
 
+// Bot API HTTP client (HTML parse mode, edit-in-place, relay-aware transport).
+//
 // The Telegram Bot API calls, in one place.
 //
 // Two things here are not obvious and both were bugs before this file existed.

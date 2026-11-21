@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// Long-running job registry (one running job per kind; cancel + progress).
+//
 // One abstraction for an operation that outlives the request that started it.
 //
 // There were hand-rolled versions of this before. The link test kept a

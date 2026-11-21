@@ -273,7 +273,9 @@ type PckConfig struct {
 	PckFlags []string `toml:"pck_flags"`
 }
 
-// ServerConfig represents the configuration for the server.
+// ServerConfig is the [server] TOML table: Iran side of a reverse tunnel
+// (listens for kharej, exposes forwarded ports). Mutually exclusive with a live
+// [l3] / leftover [direct] in the same file.
 type ServerConfig struct {
 	// Naive optionally wraps the loopback TCP reverse listener in HTTP/2 with a tunnel-owned sing-box helper; experimental and disabled when empty.
 	Naive NaiveServerConfig `toml:"naive"`
@@ -468,7 +470,8 @@ func (s ServerConfig) ForwardsUDP() bool {
 	return s.AcceptUDP != nil && *s.AcceptUDP
 }
 
-// ClientConfig represents the configuration for the client.
+// ClientConfig is the [client] TOML table: kharej side of a reverse tunnel
+// (dials Iran, delivers each connection to the local backend).
 type ClientConfig struct {
 	// Naive optionally reaches the loopback reverse target through a tunnel-owned official Chromium Naive helper; experimental and disabled when empty.
 	Naive NaiveClientConfig `toml:"naive"`
@@ -650,7 +653,10 @@ type ClientConfig struct {
 	PckConfig
 }
 
-// Config represents the complete configuration, including both server and client settings.
+// Config is one TOML file's decoded tables. Exactly one engine is meant to be
+// live: reverse ([server] XOR [client]), or [l3], or a leftover [direct] that
+// is recognised only to refuse it. cmd.Run validates and dispatches; this type
+// is the schema only.
 type Config struct {
 	// Server is the reverse tunnel's Iran end: it listens for the client and
 	// exposes the forwarded ports. Present only in a configuration that asks for

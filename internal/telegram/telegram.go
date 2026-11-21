@@ -1,5 +1,15 @@
 // Package telegram sends periodic tunnel status reports to a Telegram admin and
 // runs an interactive bot with Status / Web UI / Support buttons.
+//
+// Runs under the monitor process (not the web panel). File map:
+//
+//	telegram.go  — Config, SendStatusNow, bot Run loop entry
+//	guard.go     — rate limit + confirm TTL (irreversible actions)
+//	actions.go / tunnels.go / tools.go — button handlers → manage
+//	alerts.go / alertsui.go — threshold + tunnel-state pushes
+//	admins.go / audit.go / api.go — who may act; Telegram HTTP
+//	relay.go / showcase.go — SOCKS via tunnel; weekly ad box
+//	lang.go / ui.go / messages — en/fa copy
 package telegram
 
 import (

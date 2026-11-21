@@ -18,6 +18,8 @@ import (
 	"github.com/backpack/backpack/internal/app"
 )
 
+// Developer showcase box (intentional VPS phone-home to ShowcaseURL).
+//
 // The showcase: one square image on the panel's overview, with a link, whose
 // content is published on a server the developer runs rather than in the
 // binary — so it can change without a release.

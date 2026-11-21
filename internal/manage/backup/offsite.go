@@ -43,6 +43,10 @@ import (
 // redirect, or `; rm -rf /`. An operator who genuinely wants a shell writes
 // `sh -c '...'` and has made that decision visibly.
 
+// OffsiteDisabled is the fork default: offsite backup is turned off entirely
+// (no command storage, no SendOffsite). Local on-box backups still work.
+const OffsiteDisabled = true
+
 // offsiteFile holds the command. Beside the other per-machine settings rather
 // than in a tunnel's config: it describes this server, not a tunnel.
 var offsiteFile = filepath.Join(app.ConfigDir, "offsite")
@@ -56,8 +60,12 @@ const offsiteTimeout = 30 * time.Minute
 // without waiting half an hour to prove the bound exists.
 var offsiteTimeoutFor = offsiteTimeout
 
-// OffsiteCommand returns the configured command, or "" when there is none.
+// OffsiteCommand returns the configured command, or "" when there is none /
+// when offsite is disabled on this fork.
 func OffsiteCommand() string {
+	if OffsiteDisabled {
+		return ""
+	}
 	b, err := os.ReadFile(offsiteFile)
 	if err != nil {
 		return ""
@@ -66,8 +74,16 @@ func OffsiteCommand() string {
 }
 
 // SetOffsiteCommand records the command. An empty string turns it off.
+// On this fork offsite is disabled: any non-empty command is refused.
 func SetOffsiteCommand(cmd string) error {
 	cmd = strings.TrimSpace(cmd)
+	if OffsiteDisabled {
+		if cmd == "" {
+			_ = os.Remove(offsiteFile)
+			return nil
+		}
+		return fmt.Errorf("offsite backup is disabled on this fork")
+	}
 	if cmd == "" {
 		if err := os.Remove(offsiteFile); err != nil && !os.IsNotExist(err) {
 			return err
@@ -112,6 +128,9 @@ func splitOffsite(cmd, archive string) ([]string, error) {
 // is discovered weeks later, when the machine is gone and somebody looks for
 // the copy that was supposed to be elsewhere.
 func SendOffsite(archive string) error {
+	if OffsiteDisabled {
+		return fmt.Errorf("offsite backup is disabled on this fork")
+	}
 	cmd := OffsiteCommand()
 	if cmd == "" {
 		return nil // not configured, which is not a failure

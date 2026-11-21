@@ -7,6 +7,8 @@ import (
 	"github.com/backpack/backpack/internal/tui"
 )
 
+// TUI Health Check screen → manage/health.Diagnose (same checks as the panel).
+//
 // HealthCheck runs every diagnostic and prints a grouped report with a ✓/!/✗
 // beside each item and a plain-language fix under anything that needs one.
 func HealthCheck() {

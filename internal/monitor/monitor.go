@@ -6,6 +6,9 @@
 // live inside the panel, which meant that stopping the panel also stopped the
 // watchdog and every alert — without saying so. A monitor that fails silently
 // is worse than no monitor, because it is trusted.
+//
+// Entry: Run() under `backpack -monitor`. Jobs are superviseJob'd so a Telegram
+// panic cannot silently kill the watchdog.
 package monitor
 
 import (

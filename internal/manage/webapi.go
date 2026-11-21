@@ -13,6 +13,9 @@ import (
 	"github.com/backpack/backpack/internal/optimize"
 )
 
+// Panel JSON adapters for reverse-tunnel create/edit (same Apply path as CLI).
+// Sibling: directwebapi.go for [l3]/direct forms.
+//
 // Everything in this file exists so a caller outside the package — the web
 // panel — can build and change a tunnel through exactly the same code the CLI
 // menu uses. The wizard in setup.go asks its questions one at a time because a

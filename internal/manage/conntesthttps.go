@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+// Connection Test: cheap TLS reachability probe for Naive/Xray helper endpoints.
+//
 // This deliberately uses an ordinary TLS client on a separate connection.
 // It isolates basic reachability/trust/ALPN from the actual helper's fingerprint,
 // authentication and sustained traffic. A successful probe never marks a tunnel OK.

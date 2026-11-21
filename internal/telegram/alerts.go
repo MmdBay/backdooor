@@ -13,6 +13,8 @@ import (
 	"github.com/backpack/backpack/internal/sysstat"
 )
 
+// Continuous alert watcher (thresholds + tunnel state) → Telegram pushes.
+//
 // Alerting.
 //
 // A status report every N hours tells you what was true when the cron fired.

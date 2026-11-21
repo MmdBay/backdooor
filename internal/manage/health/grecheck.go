@@ -9,6 +9,8 @@ import (
 	"github.com/backpack/backpack/internal/tunnel/l3"
 )
 
+// Diagnose helpers for kernel GRE (module + proto-47 path).
+//
 // The checks only a kernel GRE tunnel has.
 //
 // A GRE link is up as soon as it is created, whether or not anything reaches

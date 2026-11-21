@@ -9,6 +9,8 @@ import (
 	"github.com/backpack/backpack/internal/manage"
 )
 
+// State-changing bot callbacks (act:/do:) — always through actionReply + guard.
+//
 // Everything that changes something.
 //
 // One entry point, because the three guards around an action are easy to add

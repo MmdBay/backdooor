@@ -11,6 +11,8 @@ import (
 	"github.com/backpack/backpack/internal/app"
 )
 
+// Fleet registry on the panel (nodes.json): SSH targets + sealed passwords.
+//
 // StorePath is where the panel keeps its side of the fleet: the servers it
 // manages and how to reach them.
 //

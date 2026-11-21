@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+// Owner + extra admins; canWrite is the single write gate.
+//
 // Who is allowed to talk to the bot.
 //
 // There used to be exactly one answer: AdminID, the account that configured it.

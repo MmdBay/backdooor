@@ -3,6 +3,9 @@
 //
 // The theme uses three colors only: red (accents, numbers, errors), white
 // (titles, values) and gray (descriptions, separators).
+//
+// SetInput is the test seam so menu screens can be driven without a TTY.
+// quick_*.go are OS-specific “press any key” helpers.
 package tui
 
 import (

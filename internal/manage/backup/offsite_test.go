@@ -24,7 +24,31 @@ func isolateOffsite(t *testing.T) string {
 	return dir
 }
 
+func requireOffsiteEnabled(t *testing.T) {
+	t.Helper()
+	if OffsiteDisabled {
+		t.Skip("offsite backup is disabled on this fork")
+	}
+}
+
+func TestOffsiteIsDisabledOnThisFork(t *testing.T) {
+	if !OffsiteDisabled {
+		t.Fatal("OffsiteDisabled must be true on this fork")
+	}
+	isolateOffsite(t)
+	if err := SetOffsiteCommand("rclone copy {} remote:backpack/"); err == nil {
+		t.Fatal("SetOffsiteCommand accepted a command while offsite is disabled")
+	}
+	if got := OffsiteCommand(); got != "" {
+		t.Fatalf("OffsiteCommand returned %q while disabled", got)
+	}
+	if err := SendOffsite("/tmp/x.tar.gz"); err == nil || !strings.Contains(err.Error(), "disabled") {
+		t.Fatalf("SendOffsite should refuse while disabled: %v", err)
+	}
+}
+
 func TestAnOffsiteCommandRoundTrips(t *testing.T) {
+	requireOffsiteEnabled(t)
 	isolateOffsite(t)
 	if got := OffsiteCommand(); got != "" {
 		t.Fatalf("an unconfigured machine reported %q", got)
@@ -46,6 +70,7 @@ func TestAnOffsiteCommandRoundTrips(t *testing.T) {
 // Without the placeholder the command runs against nothing, which would
 // "succeed" every week and copy no backup anywhere.
 func TestACommandWithNoPlaceholderIsRefused(t *testing.T) {
+	requireOffsiteEnabled(t)
 	isolateOffsite(t)
 	err := SetOffsiteCommand("rclone copy remote:backpack/")
 	if err == nil {
@@ -97,6 +122,7 @@ func TestThePlaceholderIsReplacedEverywhereItAppears(t *testing.T) {
 
 // Nothing configured is not a failure: most machines will never set this.
 func TestSendingWithNothingConfiguredIsNotAnError(t *testing.T) {
+	requireOffsiteEnabled(t)
 	isolateOffsite(t)
 	if err := SendOffsite("/nonexistent.tar.gz"); err != nil {
 		t.Fatalf("an unconfigured machine reported an error: %v", err)
@@ -106,6 +132,7 @@ func TestSendingWithNothingConfiguredIsNotAnError(t *testing.T) {
 // A backup that is not there is worth refusing loudly rather than handing to
 // a command that will fail in its own words.
 func TestSendingAMissingArchiveSaysSo(t *testing.T) {
+	requireOffsiteEnabled(t)
 	isolateOffsite(t)
 	if err := SetOffsiteCommand("true {}"); err != nil {
 		t.Fatalf("setup: %v", err)
@@ -123,6 +150,7 @@ func TestSendingAMissingArchiveSaysSo(t *testing.T) {
 // failed — "host key verification failed" and "no space left" are different
 // problems and only the tool knows which it was.
 func TestAFailingDestinationReportsWhatTheToolSaid(t *testing.T) {
+	requireOffsiteEnabled(t)
 	dir := isolateOffsite(t)
 	archive := filepath.Join(dir, "b.tar.gz")
 	if err := os.WriteFile(archive, []byte("x"), 0o600); err != nil {
@@ -138,6 +166,7 @@ func TestAFailingDestinationReportsWhatTheToolSaid(t *testing.T) {
 
 // It actually copies, which is the one thing all of the above assumes.
 func TestAWorkingDestinationReceivesTheArchive(t *testing.T) {
+	requireOffsiteEnabled(t)
 	dir := isolateOffsite(t)
 	archive := filepath.Join(dir, "b.tar.gz")
 	if err := os.WriteFile(archive, []byte("the backup"), 0o600); err != nil {
@@ -166,6 +195,7 @@ func TestAWorkingDestinationReceivesTheArchive(t *testing.T) {
 // returns takes the backups with it — silently, because nothing is watching a
 // goroutine that is merely blocked.
 func TestADestinationThatHangsIsGivenUpOn(t *testing.T) {
+	requireOffsiteEnabled(t)
 	dir := isolateOffsite(t)
 	archive := filepath.Join(dir, "b.tar.gz")
 	if err := os.WriteFile(archive, []byte("x"), 0o600); err != nil {

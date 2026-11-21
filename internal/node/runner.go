@@ -6,14 +6,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/backpack/backpack/internal/app"
+	"github.com/backpack/backpack/internal/manage"
 	"golang.org/x/crypto/ssh"
 )
 
+// Panel-side Runner: Call(op) / IsOnline over SSH → node exec.
+//
 // Runner is how the panel reaches a managed server.
 //
 // It is the whole surface the rest of the panel ever used: ask one server to do
@@ -327,18 +331,29 @@ func mustJSON(v any) json.RawMessage {
 // coming back — and if anything went wrong there, the panel's side of it was a
 // server that never appeared and no reason why.
 //
-// The installer is fetched on the far machine from the same place it always
-// was, rather than pushed from here: the archive and its checksum have to come
-// from the same origin for verifying one against the other to prove anything,
-// and a panel in the middle would be a second thing to trust.
+// The panel host downloads and Ed25519-verifies the release, then pushes the
+// binary over SSH. That replaces remote curl|bash of unsigned install.sh from
+// main — the trust key already lives in this binary, not on a raw GitHub path.
 //
-// It is slow — a download and possibly a build — so the caller gives it room.
+// It is slow — a download and a push — so the caller gives it room.
 func (r *SSHRunner) Install(name string) (string, error) {
+	if err := app.RefuseUpstreamTrust(); err != nil {
+		return "", err
+	}
 	c, err := r.clientFor(name)
 	if err != nil {
 		return "", err
 	}
-	out, err := runLong(c, installCommand(installerURL()))
+	bin, cleanup, err := manage.FetchVerifiedBinary(func(string) {})
+	if err != nil {
+		return "", fmt.Errorf("verifying release for install on %s: %w", name, err)
+	}
+	defer cleanup()
+	data, err := os.ReadFile(bin)
+	if err != nil {
+		return "", err
+	}
+	out, err := pushBinary(c, data, app.BinPath)
 	if err != nil {
 		return string(out), fmt.Errorf("installing Backpack on %s failed: %w", name, err)
 	}
@@ -362,56 +377,36 @@ func (r *SSHRunner) clientFor(name string) (*ssh.Client, error) {
 	return c, nil
 }
 
-// Upgrade reinstalls Backpack on a server, which is how a node is brought to
-// the release the panel is on. It is the same script; the installer replaces
-// the binary and restarts what was running.
-//
-// It is the installer followed by a restart of everything that runs the binary.
-// The installer replaces the file and stops there — it restarts nothing — so
-// without the second half every tunnel on the server kept running the old
-// build, the version the server reports came from the new file, and a staged
-// rollout verified a server that had not actually changed.
+// Upgrade brings a managed server to a signed release via `backpack self-update`
+// on that host (same Ed25519 path as the in-app updater), then restarts what
+// runs the binary. Unsigned install.sh from main is never fetched.
 func (r *SSHRunner) Upgrade(name string) (string, error) {
+	if err := app.RefuseUpstreamTrust(); err != nil {
+		return "", err
+	}
 	c, err := r.clientFor(name)
 	if err != nil {
 		return "", err
 	}
-	out, err := runLong(c, upgradeCommand(installerURL(), app.BinPath))
+	out, err := runLong(c, upgradeCommand(app.BinPath))
 	if err != nil {
 		return string(out), fmt.Errorf("upgrading Backpack on %s failed: %w", name, err)
 	}
 	return string(out), nil
 }
 
-func installerURL() string {
-	return fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/main/install.sh",
-		app.RepoOwner, app.RepoName)
+// pushBinary writes a verified backpack binary to dest on the far host via SSH
+// stdin (no curl|bash). chmod + atomic rename into place.
+func pushBinary(c *ssh.Client, data []byte, dest string) ([]byte, error) {
+	cmd := `(f="$(mktemp)" || exit 1; cat > "$f" && chmod 755 "$f" && mv -f "$f" ` + quote(dest) + ` && echo installed)`
+	return runSSH(context.Background(), c, cmd, data, sshInstallTimeout, true)
 }
 
-// installCommand is the shell line that fetches the installer and runs it.
-//
-// The installer is downloaded whole before it runs, and runs with stdin closed.
-// It used to be `curl … | bash < /dev/null`: the redirection replaced the pipe
-// as bash's stdin, so bash read an empty script and exited 0 — every remote
-// install and upgrade reported success having run nothing. Downloading first
-// also means a failed download fails the line instead of running half a script,
-// and nothing the installer reads from stdin can consume its own text.
-func installCommand(url string) string {
-	// A private temporary file rather than bash -c "$script": no limit on the
-	// installer's size (one argument is capped at 128 KB), and the file is
-	// removed whatever happens. The subshell makes the whole line one command,
-	// so upgradeCommand can chain on its exit status.
-	return `(f="$(mktemp)" || exit 1; ` +
-		`if curl -fsSL ` + quote(url) + ` -o "$f" && [ -s "$f" ]; then bash "$f" < /dev/null 2>&1; rc=$?; else rc=1; fi; ` +
-		`rm -f "$f"; exit $rc)`
-}
-
-// upgradeCommand is installCommand followed by restarting what runs the binary:
-// every tunnel (the same --restart-all the scheduled refresh uses), then the
-// monitor, proxy and panel units if they are running. The unit restarts are
-// best effort — a server without a panel has no panel to restart.
-func upgradeCommand(url, bin string) string {
-	return installCommand(url) +
+// upgradeCommand runs the signed self-update on the far host, then restarts
+// tunnels and optional units. The update replaces the file and stops there —
+// without the second half every tunnel kept running the old build.
+func upgradeCommand(bin string) string {
+	return quote(bin) + " self-update 2>&1" +
 		" && " + quote(bin) + " --restart-all 2>&1" +
 		" && { systemctl try-restart " + app.MonitorService + " " + app.ProxyService + " " + app.WebUIService +
 		" >/dev/null 2>&1; true; }"

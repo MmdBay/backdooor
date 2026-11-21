@@ -8,6 +8,8 @@ import (
 	"github.com/backpack/backpack/internal/node"
 )
 
+// Enroll a server now (reachability + optional install); fail → remove entry.
+//
 // Adding a server to the fleet, as a decision rather than as a form handler.
 //
 // This was three hundred lines into an HTTP handler, mixed with form parsing

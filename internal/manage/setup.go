@@ -18,6 +18,9 @@ import (
 	"github.com/backpack/backpack/internal/utils/network"
 )
 
+// Reverse/direct setup helpers shared by the interactive wizard (reversesetup /
+// directsetup) and the transport picker: families, presets, TOML write path.
+//
 // transportEntry is one selectable transport. An empty value marks an entry
 // that is listed for orientation but cannot be chosen yet.
 type transportEntry struct {

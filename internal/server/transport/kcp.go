@@ -45,6 +45,7 @@ type kcpGen struct {
 // stalls — heavy packet loss, aggressive throttling of long-lived TCP flows,
 // or a path where the return route is asymmetric. Forward error correction
 // repairs losses without waiting a full round trip for a retransmit.
+// Shared cores: lifecycle, controlloop, pairloop; not ADR 0006 peerauth MAC.
 type KcpTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.

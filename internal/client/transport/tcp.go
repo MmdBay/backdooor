@@ -15,6 +15,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// TcpTransport is the kharej plain-TCP reverse client (and stealth when
+// TcpConfig.Stealth). Other client transports copy this structure with a
+// different wire; shared behaviour lives on embedded lifecycle.
 type TcpTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.
@@ -28,12 +31,15 @@ type TcpTransport struct {
 	// server sends must open under it. nil against an older server.
 	peer peerSession
 }
+
+// TcpConfig is the dial-side knobs for TcpTransport (from [client] TOML).
 type TcpConfig struct {
 	RemoteAddr string
 	// Endpoints rotates through the server addresses (primary + fallbacks)
 	// so a filtered IP or blocked port does not stop the tunnel.
-	Endpoints      *network.Endpoints
-	Token          string
+	Endpoints *network.Endpoints
+	Token     string
+	// SnifferLog / WebPort / Sniffer feed the optional per-tunnel monitor page.
 	SnifferLog     string
 	KeepAlive      time.Duration
 	RetryInterval  time.Duration

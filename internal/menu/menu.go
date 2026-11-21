@@ -1,5 +1,15 @@
 // Package menu implements the interactive backpack CLI shown when the binary
-// is run without a config file.
+// is run without a config file (`backpack` with no -c). Thin over manage + tui;
+// no second business logic. File map:
+//
+//	menu.go     — Run loop, root check, ensure panel/monitor/units
+//	manage.go   — Manage submenu (tunnels, health, link test, …)
+//	update.go   — release channel / network / local / restore points
+//	backup.go   — archive + fleet key + offsite + drill
+//	system.go   — auto-refresh, optimize, uninstall
+//	webpanel.go — panel port / password / path / TLS
+//	telegram.go — bot token / admins / alerts
+//	proxy.go    — built-in SOCKS5/HTTP
 package menu
 
 import (

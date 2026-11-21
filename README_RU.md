@@ -9,20 +9,20 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/AminMGMT/BackPack/releases/latest">
-    <img src="https://img.shields.io/github/v/release/AminMGMT/BackPack?logo=github&label=release&color=orange" alt="Latest release">
+  <a href="https://github.com/MmdBay/backpack/releases/latest">
+    <img src="https://img.shields.io/github/v/release/MmdBay/backpack?logo=github&label=release&color=orange" alt="Latest release">
   </a>
   <a href="go.mod">
-    <img src="https://img.shields.io/github/go-mod/go-version/AminMGMT/BackPack?logo=go&label=Go" alt="Go version">
+    <img src="https://img.shields.io/github/go-mod/go-version/MmdBay/backpack?logo=go&label=Go" alt="Go version">
   </a>
   <a href="LICENSE">
-    <img src="https://img.shields.io/github/license/AminMGMT/BackPack?color=orange" alt="License">
+    <img src="https://img.shields.io/github/license/MmdBay/backpack?color=orange" alt="License">
   </a>
-  <a href="https://github.com/AminMGMT/BackPack/stargazers">
-    <img src="https://img.shields.io/github/stars/AminMGMT/BackPack?style=flat&logo=github&color=orange" alt="GitHub stars">
+  <a href="https://github.com/MmdBay/backpack/stargazers">
+    <img src="https://img.shields.io/github/stars/MmdBay/backpack?style=flat&logo=github&color=orange" alt="GitHub stars">
   </a>
-  <a href="https://github.com/AminMGMT/BackPack/releases">
-    <img src="https://img.shields.io/github/downloads/AminMGMT/BackPack/total?logo=github&label=downloads&color=orange" alt="Downloads">
+  <a href="https://github.com/MmdBay/backpack/releases">
+    <img src="https://img.shields.io/github/downloads/MmdBay/backpack/total?logo=github&label=downloads&color=orange" alt="Downloads">
   </a>
 </p>
 
@@ -44,7 +44,7 @@
 На обоих серверах:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/AminMGMT/BackPack/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/MmdBay/backpack/main/install.sh)
 ```
 
 Затем:
@@ -264,7 +264,7 @@ Modified versions must keep this line, unaltered, in their README (and in NOTICE
 
 ```text
 Based on BackPack by Amin Mohammadi (AminMGMT)
-https://github.com/AminMGMT/BackPack
+https://github.com/MmdBay/backpack
 ```
 
 ### Name & logo

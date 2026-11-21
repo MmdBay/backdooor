@@ -13,6 +13,8 @@ import (
 	"github.com/backpack/backpack/internal/node"
 )
 
+// Desired-state store + Reconcile (drift report only — never auto-applies).
+//
 // What a managed server is supposed to be running, and what it is running.
 //
 // Every fleet operation was imperative: the panel told a node to create a

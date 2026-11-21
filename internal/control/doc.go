@@ -33,4 +33,12 @@
 // unfinished feature: a reconciler that re-applies on its own is a loop that
 // can fight an operator mid-change, and what it would be fighting over is the
 // tunnel that operator is reaching the machine through. See desired.go.
+//
+// File map:
+//
+//	desired.go — remembered fleet intent vs OpList (detect only)
+//	fleet.go   — node.Runner holder (SSH dial-out)
+//	job.go     — long-running ops (link test, rollout, …) one-per-kind
+//	join.go    — add server to fleet (reach + optional install)
+//	net.go     — panel→node path loss probes for the fleet card
 package control

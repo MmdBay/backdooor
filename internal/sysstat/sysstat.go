@@ -6,7 +6,7 @@
 // import the panel back. Rather than sampling the same counters twice with two
 // sets of rounding, both read them here — an alert that says 86% and a
 // dashboard that says 85% for the same instant is a support question nobody
-// should have to answer.
+// should have to answer. Snapshot() is the whole API surface.
 package sysstat
 
 import (

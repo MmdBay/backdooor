@@ -12,6 +12,8 @@ import (
 	"github.com/backpack/backpack/internal/app"
 )
 
+// Post-update machine corrections (runs every update; idempotent).
+//
 // What an update forces onto a server that an older version set up.
 //
 // A fix that changes only what a new install writes reaches nobody. The servers

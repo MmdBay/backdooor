@@ -2,6 +2,8 @@ package manage
 
 import "github.com/backpack/backpack/internal/manage/health"
 
+// Compatibility re-exports for internal/manage/health (no logic here).
+//
 // Whether the tunnels are working — the per-tunnel health, the watchdog that
 // acts on it, the monitor's heartbeat and the full Health Check — now lives in
 // internal/manage/health. See that package's doc.

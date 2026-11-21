@@ -8,9 +8,9 @@ import (
 	"github.com/backpack/backpack/internal/utils/network"
 )
 
-// addrHost returns the host part of a host:port address (brackets stripped for
-// IPv6), or fallback when it can't be parsed.
-
+// Programmatic tunnel edit (panel / Telegram / CLI): ports, bind, remote host.
+// Empty fields mean “leave unchanged”; bot-relay mappings are preserved.
+//
 // EditTunnel changes a tunnel's ports/address in one shot and restarts it so
 // the change takes effect. Empty values leave a setting unchanged:
 //

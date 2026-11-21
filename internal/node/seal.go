@@ -14,6 +14,8 @@ import (
 	"github.com/backpack/backpack/internal/app"
 )
 
+// AES-GCM seal for fleet root passwords (enc:v1:…). Key lives outside backups.
+//
 // Sealing the one credential this machine holds for somebody else.
 //
 // Everything else in the config directory is a secret about this machine: a

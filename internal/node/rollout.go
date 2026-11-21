@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+// Ordered fleet binary upgrades (canary then rest; per-node rollback unchanged).
+//
 // Staged fleet updates.
 //
 // "Upgrade all" replaced the binary on every managed server at once, in

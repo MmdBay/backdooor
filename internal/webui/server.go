@@ -1,5 +1,10 @@
 package webui
 
+// HTTP panel process entry (`backpack -webui`): sessions, login/TOTP, route
+// table, and calls into manage. Auth policy lives in access.go; cookies/CSRF in
+// panelsecurity.go; root shell in terminal.go. Handlers_* map UI actions to
+// manage — thin over the same seam the CLI uses.
+
 import (
 	"context"
 	"crypto/rand"
@@ -37,6 +42,8 @@ const sessionCookie = "backpack_session"
 // name means the cookie and the session it names cannot expire at different
 // times.
 const sessionTTL = 12 * time.Hour
+
+// --- Browser session store (cookie backpack_session) ------------------------
 
 // sessionInfo is what the panel remembers about one signed-in browser — the
 // address and age make the Settings session list meaningful, and the token

@@ -11,6 +11,8 @@ import (
 	"github.com/backpack/backpack/internal/manage"
 )
 
+// Non-tunnel Tools screens (panel URL, backup, update, diagnose, audit).
+//
 // The screens that are not about one tunnel: the panel, backups, updates,
 // restore points, diagnostics and the record of what has happened.
 //

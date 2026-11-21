@@ -5,6 +5,15 @@
 // A tunnel runs as its own process, so there is no shared memory to inspect.
 // Each engine writes a small JSON file that the menu reads, which keeps the
 // two sides decoupled and costs nothing when nobody is looking.
+//
+// File map:
+//
+//	metrics.go — Snapshot schema + Collector write loop (the manage seam)
+//	pool.go    — live pool figures for the panel (client only)
+//	runtime.go — goroutine / FD / heap for leak spotting
+//
+// Invariant: Connected and Peer come from the engine, not ss/netstat — a
+// kernel ESTABLISHED socket can outlive a dead tunnel by minutes.
 package metrics
 
 import (

@@ -45,7 +45,10 @@ const ( // Default values
 	defaultMuxCon           = 8
 )
 
+// applyDefaults fills zeros and warns about footguns. It never fatals: that
+// belongs to validateConfig so a bad reload cannot crash a healthy process.
 func applyDefaults(cfg *config.Config) {
+	// --- Datagram socket buffers (KCP/xdi/pck/QUIC/UDP) ---------------------
 	// Socket buffers for the datagram transports, when the file sets none.
 	//
 	// The wizard's presets always set them (4 to 32 MB); a config written by

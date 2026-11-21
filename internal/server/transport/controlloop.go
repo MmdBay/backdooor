@@ -10,6 +10,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Server control-channel loop (one copy for every reverse transport).
+//
 // controlLoop serves one generation's control channel on the server side:
 // it beats the heartbeat, asks the client for a tunnel connection whenever the
 // forwarder queues a user, listens for the client's goodbye, and says the

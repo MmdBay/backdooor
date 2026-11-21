@@ -15,7 +15,13 @@ import (
 )
 
 // Peer authentication for the plain reverse transports: tcp, tcpmux, ws,
-// ws mux and udp. See docs/adr/0006-plain-transports-prove-both-ends.md.
+// wsmux and udp. See docs/adr/0006-plain-transports-prove-both-ends.md.
+//
+// File map:
+//   - PeerKey / Hello / Reply / Confirm  — three-message proof (token stays off wire)
+//   - PeerSession SealTarget/OpenTarget  — destinations MAC'd so kharej won't dial forged addrs
+//   - PeerGuard                          — required vs gradual upgrade + .peer pin file
+//   - PeerPinPath                        — path beside the tunnel TOML
 //
 // Those transports sent the tunnel token as it is and took the server's echo
 // of it as proof that the server knew it. On a path someone else controls that
@@ -142,6 +148,8 @@ func decodePair(s string, a, b []byte) bool {
 	return true
 }
 
+// --- Session key + sealed destinations (F-11 fix) ---------------------------
+
 // PeerSession is what a completed handshake leaves both ends holding.
 type PeerSession struct {
 	key     [32]byte
@@ -231,6 +239,8 @@ func (s *PeerSession) PoolTag() string {
 	m.Write([]byte("p"))
 	return hex.EncodeToString(m.Sum(nil))
 }
+
+// --- Upgrade policy (v1.x handshake → v2 proof; pin prevents downgrade) -----
 
 // PeerGuard is one tunnel end's policy for the handshake: its key, whether a
 // peer on the previous handshake is still accepted, and what it remembers.

@@ -14,6 +14,8 @@ import (
 	"github.com/backpack/backpack/internal/tunhist"
 )
 
+// Per-tunnel bot screens (status/restart/…); names hashed in callback_data.
+//
 // Driving the tunnels from the chat.
 //
 // Callback data is capped at 64 bytes, which a tunnel name plus an action verb

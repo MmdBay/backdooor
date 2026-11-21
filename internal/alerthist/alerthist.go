@@ -4,7 +4,7 @@
 // The watcher lives in the backpack-monitor process and the web panel in its
 // own; a JSON file is the same decoupling the tunnel metrics already use. The
 // monitor writes, everyone else reads, and a missing file simply means nothing
-// has ever fired.
+// has ever fired. Append / Load / Active summaries only.
 package alerthist
 
 import (

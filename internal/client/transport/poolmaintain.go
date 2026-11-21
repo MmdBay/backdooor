@@ -10,6 +10,10 @@ import (
 	"github.com/backpack/backpack/internal/metrics"
 )
 
+// Client pool sizing loop (one policy for every reverse transport).
+// Transport supplies dial + counters; this decides grow/shrink and reports
+// to metrics so the panel card is never "missing" on one wire type.
+//
 // How big the connection pool should be, decided once.
 //
 // Every client transport keeps a pool of connections dialled ahead of the

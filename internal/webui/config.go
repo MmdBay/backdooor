@@ -21,7 +21,7 @@ import (
 
 // Config is the persisted web-panel configuration.
 type Config struct {
-	Password string `json:"password"` // 8-digit login password
+	Password string `json:"password"` // high-entropy login password (fork default)
 	Port     int    `json:"port"`
 
 	// BasePath is the secret path segment the whole panel lives under, so it
@@ -240,8 +240,8 @@ func saveConfig(c Config) error {
 	return app.WriteFileAtomic(configPath(), data, 0600)
 }
 
-// EnsurePassword returns the config, generating and saving an 8-digit password
-// and a base path if either is missing.
+// EnsurePassword returns the config, generating and saving a strong password
+// and a long secret base path if either is missing.
 //
 // The base path is generated here rather than only on a fresh install, so a
 // panel that has been running at "/" for a year gets one on the next upgrade.
@@ -256,7 +256,7 @@ func EnsurePassword() (Config, error) {
 	Load()
 	return UpdateConfig(func(c *Config) error {
 		if c.Password == "" {
-			c.Password = randomDigits(8)
+			c.Password = randomStrongSecret(passwordSecretLen)
 		}
 		if c.BasePath == "" {
 			c.BasePath = randomPathSegment()
@@ -281,23 +281,40 @@ func (c Config) URL(host string) string {
 	return fmt.Sprintf("%s://%s:%d%s/", c.Scheme(), host, c.Port, c.PathPrefix())
 }
 
-// basePathAlphabet leaves out the characters that are misread when a URL is
-// copied off a terminal by hand: no 0/O, no 1/l/I. What is left is still 57
-// bits over 14 characters, which is not a space anybody sweeps.
-const basePathAlphabet = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+// secretAlphabet leaves out characters that are misread when a URL or password
+// is copied off a terminal by hand: no 0/O, no 1/l/I.
+const secretAlphabet = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+
+// pathSecretLen / passwordSecretLen are fork defaults: long enough that
+// internet path sweeps and online guessing are not practical.
+const (
+	pathSecretLen     = 32
+	passwordSecretLen = 32
+)
 
 // randomPathSegment returns a path segment nobody can guess.
 func randomPathSegment() string {
-	const n = 14
+	return randomFromAlphabet(pathSecretLen)
+}
+
+// randomStrongSecret returns a high-entropy panel password (not short digits).
+func randomStrongSecret(n int) string {
+	return randomFromAlphabet(n)
+}
+
+func randomFromAlphabet(n int) string {
+	if n <= 0 {
+		return ""
+	}
 	b := make([]byte, n)
 	for i := range b {
-		d, err := rand.Int(rand.Reader, big.NewInt(int64(len(basePathAlphabet))))
+		d, err := rand.Int(rand.Reader, big.NewInt(int64(len(secretAlphabet))))
 		if err != nil {
-			// Refusing to guess is the only safe answer: a predictable path is
+			// Refusing to guess is the only safe answer: a predictable secret is
 			// worse than none, because it reads as a secret and is not one.
 			return ""
 		}
-		b[i] = basePathAlphabet[d.Int64()]
+		b[i] = secretAlphabet[d.Int64()]
 	}
 	return string(b)
 }
@@ -309,7 +326,7 @@ func validBasePath(s string) bool {
 	if s == "" {
 		return true // the root, which is how it is turned off
 	}
-	if len(s) > 64 {
+	if len(s) > 96 {
 		return false
 	}
 	for _, r := range s {
@@ -322,9 +339,9 @@ func validBasePath(s string) bool {
 	return true
 }
 
-// RegeneratePassword creates a new 8-digit password and restarts the panel.
+// RegeneratePassword creates a new strong password and restarts the panel.
 func RegeneratePassword() (Config, error) {
-	c, err := UpdateConfig(func(c *Config) error { c.Password = randomDigits(8); return nil })
+	c, err := UpdateConfig(func(c *Config) error { c.Password = randomStrongSecret(passwordSecretLen); return nil })
 	if err != nil {
 		return c, err
 	}

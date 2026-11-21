@@ -2,6 +2,8 @@ package manage
 
 import "time"
 
+// Panel-facing durations/helpers for the same Connection Test sequence as the menu.
+//
 // What the web panel's Connection Test section needs from the test that the
 // menu runs. The panel drives the same StartConnTestIran → Joined → Run →
 // Fetched sequence connTestIranMenu does; these are the few facts it would

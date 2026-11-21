@@ -9,6 +9,7 @@ import (
 	"github.com/backpack/backpack/internal/tui"
 )
 
+// Connection Test TUI: pick IPv4/IPv6 candidate hosts for a suite run.
 func ctChooseHosts() []string {
 	addresses := ConnTestAddresses()
 	byFamily := map[string][]string{}

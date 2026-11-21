@@ -16,6 +16,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// UdpTransport is the kharej plain-UDP reverse client. Control is a TCP-like
+// claim on the UDP path; data is datagrams. Peerauth applies to the control
+// claim; pool sizing uses the shared poolmaintain (must report metrics).
 type UdpTransport struct {
 	// The generations of this transport and what outlives them: see
 	// lifecycle.go.
@@ -26,6 +29,8 @@ type UdpTransport struct {
 	// server sends must open under it. nil against an older server.
 	peer peerSession
 }
+
+// UdpConfig is dial-side knobs for transport = "udp".
 type UdpConfig struct {
 	RemoteAddr string
 	// Endpoints rotates through the server addresses (primary + fallbacks)

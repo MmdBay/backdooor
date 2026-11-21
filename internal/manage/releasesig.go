@@ -12,6 +12,8 @@ import (
 	"github.com/backpack/backpack/internal/app"
 )
 
+// Ed25519 verify of SHA256SUMS.sig (key = app.ReleasePublicKey in the running binary).
+//
 // Proving a release came from the person who publishes them.
 //
 // Every release carries a SHA256SUMS file, and the updater refuses to install

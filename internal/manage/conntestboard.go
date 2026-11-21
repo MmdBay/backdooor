@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+// Connection Test live/verdict table UI (in-place row updates).
+//
 // The Connection Test's table, drawn while the test runs.
 //
 // Each tunnel is one row, and a row changes as its echoes come back: STATUS

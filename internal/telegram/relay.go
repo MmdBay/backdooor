@@ -10,6 +10,8 @@ import (
 	"github.com/backpack/backpack/internal/manage"
 )
 
+// Auto-pick a healthy reverse tunnel to SOCKS-relay Telegram API traffic.
+//
 // Choosing which tunnel carries the bot's traffic.
 //
 // The Iran server cannot reach Telegram directly, so every request goes through

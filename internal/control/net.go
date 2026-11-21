@@ -9,6 +9,8 @@ import (
 	"github.com/backpack/backpack/internal/utils/network"
 )
 
+// Fleet-card path probes (loss-focused) from the panel host toward each node.
+//
 // What the path between this panel and each managed server is actually like.
 //
 // The fleet card had a row at the bottom repeating the login it was reached

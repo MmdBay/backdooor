@@ -8,6 +8,9 @@ import (
 	"time"
 )
 
+// Link-test / path quality (latency, jitter, loss) — not throughput.
+// Menu + panel “Link Test” call this; see also conntest for full transport matrix.
+//
 // Path benchmarking.
 //
 // Choosing a transport is really a question about the link between the two

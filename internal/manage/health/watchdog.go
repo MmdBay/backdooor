@@ -18,6 +18,9 @@ import (
 	"github.com/backpack/backpack/internal/quota"
 )
 
+// Tunnel watchdog (monitor process): poll health → enginectl restart-transport
+// first → systemctl restart last. Flap reporting aggregates repeated restarts.
+//
 // Watchdog tuning.
 const (
 	wdInterval  = 25 * time.Second // how often to check

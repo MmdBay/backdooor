@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+// Connection Test → recommended presets/MTU from measured RTT/loss/speed.
+//
 // Best settings: what the Connection Test measured, turned into the numbers
 // to build the tunnel with.
 //

@@ -10,6 +10,9 @@ import (
 	"github.com/backpack/backpack/internal/utils/network"
 )
 
+// Interactive “Manage Tunnels” screens (list → edit/start/stop/log/delete).
+// Called from package menu; logic stays in manage so panel/bot share it.
+//
 // stateLabel returns a themed running/stopped label for a service.
 func stateLabel(service string) string {
 	if IsActive(service) {

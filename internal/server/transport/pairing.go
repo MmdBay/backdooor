@@ -8,6 +8,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Pairing helpers shared by stream transports (timeout, requeue, drain).
+// The generic state machine lives in pairloop.go; this file is the plumbing
+// that every copy used to get wrong independently.
+
 // pairingTimeout is how long an accepted client connection waits for a tunnel
 // connection to carry it before it is given up on.
 //

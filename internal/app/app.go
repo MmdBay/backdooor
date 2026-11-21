@@ -1,29 +1,46 @@
 // Package app holds shared constants and paths used across the backpack
 // management layer (menu, manage, telegram, schedule, optimize).
+//
+// Sections in this file:
+//   - Product identity (Version, SourceURL, ShowcaseURL)
+//   - On-disk layout (InstallDir, ConfigDir, systemd names)
+//   - Release trust (ReleasePublicKey — updater refuses unsigned archives)
+//   - Secret file modes and derived ports (TunnelConfigMode, SocksPortForToken)
 package app
 
 import (
 	"crypto/sha256"
 	"encoding/binary"
+	"fmt"
 	"runtime"
+	"strings"
 )
 
 const (
+	// --- Product identity ---------------------------------------------------
+
 	// Version of the backpack engine.
 	Version = "v2.0.0"
 
 	// RepoOwner/RepoName identify the GitHub repository used by the installer
-	// and the release-based updater.
-	RepoOwner = "AminMGMT"
-	RepoName  = "BackPack"
+	// and the release-based updater. Fork-owned — not AminMGMT upstream.
+	RepoOwner = "MmdBay"
+	RepoName  = "backpack"
 
 	// SourceURL is where the source lives, printed with the version.
 	SourceURL = "https://github.com/" + RepoOwner + "/" + RepoName
 
-	// ShowcaseURL is the manifest of the overview's showcase box, published
-	// on the developer's own server. Empty leaves the box out. See
-	// manage/showcase.go.
-	ShowcaseURL = "http://94.139.180.174:8088/ad.json"
+	// ShowcaseURL is the manifest of the overview's showcase box. Empty
+	// disables phone-home entirely (fork default). See manage/showcase.go.
+	ShowcaseURL = ""
+
+	// UpstreamRepoOwner / UpstreamReleasePublicKey are the AminMGMT values this
+	// fork must never trust again. RefuseUpstreamTrust fails closed if either
+	// is still wired into this build.
+	UpstreamRepoOwner         = "AminMGMT"
+	UpstreamReleasePublicKey  = "uDVeC9NUFceAuhg53ZWbBNTVSaMC8tEvtwWmcDZmV9Q="
+
+	// --- On-disk layout (VPS paths the manage layer assumes) ----------------
 
 	// InstallDir is where the release bundle lives on the VPS.
 	InstallDir = "/root/BackPack"
@@ -108,7 +125,28 @@ func ServiceName(name string) string {
 // A var rather than a const so a test can pin a key of its own — the same
 // reason node.StorePath and optimize.sysctlFile are vars. Nothing at runtime
 // writes it.
-var ReleasePublicKey = "uDVeC9NUFceAuhg53ZWbBNTVSaMC8tEvtwWmcDZmV9Q="
+//
+// Fork signing key (public half). Private half is operator/CI secret only;
+// never commit the private key into this repository.
+var ReleasePublicKey = "0evUJ1t/wVOEYb4uB8Wraq685thkcxo4BWF+hSn37hU="
+
+// RefuseUpstreamTrust fails closed when this build still points at AminMGMT
+// identity or the upstream release public key. Call before any remote
+// update/install that trusts GitHub releases.
+func RefuseUpstreamTrust() error {
+	if RepoOwner == UpstreamRepoOwner {
+		return fmt.Errorf("this fork refuses upstream repo identity %s/%s — set RepoOwner to a Suren-controlled value",
+			UpstreamRepoOwner, RepoName)
+	}
+	key := strings.TrimSpace(ReleasePublicKey)
+	if key == "" {
+		return fmt.Errorf("this fork requires a pinned ReleasePublicKey before update or install")
+	}
+	if key == UpstreamReleasePublicKey {
+		return fmt.Errorf("this fork refuses the AminMGMT ReleasePublicKey — generate a new key with tools/releasekey")
+	}
+	return nil
+}
 
 // TunnelConfigMode is the permission a tunnel's TOML config is written with.
 //

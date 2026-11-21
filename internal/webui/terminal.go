@@ -1,5 +1,7 @@
 package webui
 
+// Browser root shell (WebSocket). Tokens never allowed — session cookie only.
+//
 // A root shell on this machine, in the browser.
 //
 // The panel is already root here — it writes systemd units and tunnel configs,

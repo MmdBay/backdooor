@@ -538,7 +538,7 @@ export function settingsView(ctx) {
               <button class="btn2 dgr" data-ps="none">No path</button></div>
             <div class="gl2" style="margin-top:18px">Login code and restart</div>
             <div class="arow"><div class="tx"><b>New login code</b>
-              <span>A fresh random 8-digit password. Every device is signed out, this one too.</span></div>
+              <span>A fresh random strong password. Every device is signed out, this one too.</span></div>
               <button class="btn2" data-ps="code">Generate</button></div>
             <div class="arow"><div class="tx"><b>Restart the panel</b>
               <span>Tunnels are not touched. This page reconnects by itself in a few seconds.</span></div>
@@ -744,7 +744,7 @@ export function settingsView(ctx) {
       }));
 
       byText(/^changelog$/i).forEach(b => b.addEventListener('click', () =>
-        window.open('https://github.com/AminMGMT/BackPack/releases', '_blank', 'noopener')));
+        window.open('https://github.com/MmdBay/backpack/releases', '_blank', 'noopener')));
 
       byText(/^download$/i).forEach(b => b.addEventListener('click', () => {
         location.href = api.backupExportURL();

@@ -48,6 +48,9 @@
 // genuinely do today. An op that reports success and changes nothing is worse
 // than an op that does not exist, because a ladder with a rung that does nothing
 // is a ladder whose failures are invisible.
+//
+// Ops (closed list): Status, RestartTransport. Serve binds /run/backpack/<name>.sock;
+// cmd/enginesocket.go is the engine-side handler.
 package enginectl
 
 import (

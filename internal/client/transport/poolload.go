@@ -6,6 +6,10 @@ import (
 	"github.com/backpack/backpack/internal/metrics"
 )
 
+// Throughput-based pool growth (complements request-churn triggers).
+// Reads metrics byte counters; never the only grow reason — empty counters
+// simply never fire. Caps at poolGrowthLimit × configured size.
+//
 // Scaling the connection pool on throughput, not only on churn.
 //
 // The pool grows when the server asks for new connections faster than the pool

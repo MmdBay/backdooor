@@ -7,6 +7,9 @@
 // Each end of the tunnel used to carry its own copy of both, with its own copy
 // of the write bound, and a test that read the other side's source to check the
 // two bounds still agreed. They are here once, so they cannot disagree.
+//
+// Public surface: Net(conn) / WS(conn) → Link{Send,Receive,SetReadDeadline,Close}.
+// WriteTimeout is the stall budget that replaced "block until TCP gives up".
 package controlwire
 
 import (

@@ -91,9 +91,13 @@ func startMetricsWithTraffic(
 // all, and for the two rules that keep watching it from being a liability: a
 // file that does not parse is ignored, and a file that means the same thing
 // does not disturb the tunnel.
+//
+// Loop shape (one "generation" per pass):
+//
+//	load/validate → await quota → start engine + quota watcher →
+//	await config change or enginectl restart → stop → settle ports → repeat
 func Run(configPath string, ctx context.Context) {
-	// The first load is the one that must succeed: there is no running tunnel
-	// to fall back to, so a bad file here is fatal exactly as it always was.
+	// --- First load (fatal if bad; no running tunnel to keep) ---------------
 	cfg, err := loadConfig(configPath)
 	if err != nil {
 		logger.Fatalf("failed to load configuration: %v", err)
@@ -103,23 +107,16 @@ func Run(configPath string, ctx context.Context) {
 		logger.Fatalf("%v", err)
 	}
 
-	// The kernel tuning is process-wide and does not depend on anything in the
-	// file that a reload can change, so it is applied once rather than on every
-	// reload.
+	// Kernel tuning is process-wide; apply once, not on every reload.
 	tuned := false
 
-	// The local control socket, so that whatever is watching this tunnel has a
-	// rung below `systemctl restart`. It lives for the whole process rather
-	// than for one generation: a caller asking what the engine is doing while
-	// it is between transports should get an answer, not a closed socket.
-	// See internal/enginectl.
+	// Process-lifetime control socket (enginectl). Survives generations so a
+	// Status call between transports still gets an answer. See enginesocket.go.
 	ctl := &engineControl{name: tunnelNameFromPath(configPath)}
 	serveEngineControl(ctx, ctl)
 
 	for {
-		// A tunnel that has used its traffic limit up does not start until the
-		// limit is raised. The file may have changed while it waited, so it is
-		// read again rather than starting what was loaded before. See quota.go.
+		// --- Quota gate: stay "offline" until limit raised ------------------
 		ok, waited := awaitQuota(ctx, configPath)
 		if !ok {
 			return
@@ -133,21 +130,16 @@ func Run(configPath string, ctx context.Context) {
 			}
 		}
 
-		// The engine mutates the configuration it is given — the transports
-		// write their status back into it — so it gets its own copy and the
-		// pristine one is kept for comparing against the file.
+		// Engine mutates its copy (status fields); keep cfg pristine for DeepEqual.
 		running := *cfg
 
-		// Decided here rather than inside the goroutine, which would be reading
-		// the flag while this loop writes it.
 		applyTuning := !tuned
 		tuned = true
 
+		// --- One generation: transport + live quota watcher -----------------
 		runCtx, cancel := context.WithCancel(ctx)
 		done := make(chan struct{})
-		// Ending this generation is exactly what a configuration change does,
-		// so a restart asked for over the socket takes the path a reload takes
-		// rather than a second way of stopping a transport.
+		// enginectl RestartTransport cancels this generation — same path as reload.
 		ctl.setGeneration(cancel, cfg)
 		runCtx = ctl.helperContext(runCtx)
 		go func() {
@@ -169,9 +161,6 @@ func Run(configPath string, ctx context.Context) {
 				// Ended by its traffic limit; awaitQuota holds it at the top.
 				continue
 			}
-			// A restart asked for over the control socket. It is not a reload
-			// and is not reported as one: the same configuration starts again,
-			// after its ports come free.
 			logger.Info("the transport was asked to restart; starting it again")
 			waitForPorts(ctx, portsInUse(cfg))
 			continue
@@ -183,7 +172,10 @@ func Run(configPath string, ctx context.Context) {
 	}
 }
 
-// runEngine runs one tunnel until ctx ends.
+// runEngine runs one tunnel generation until ctx ends.
+//
+// Dispatch order is an invariant: [l3] first, then refuse legacy [direct],
+// then reverse [server]/[client]. The three engines never share startup code.
 func runEngine(cfg *config.Config, ctx context.Context, configPath string, applyTuning bool) {
 	cleanupPck := func() {
 		network.CleanupPckGuards(cfg.Server.Token, cfg.Client.Token, cfg.L3.Token)
@@ -193,25 +185,18 @@ func runEngine(cfg *config.Config, ctx context.Context, configPath string, apply
 	network.CleanupPckGuards()
 	defer cleanupPck()
 
-	// A layer-3 tunnel is a different thing from a port forwarder and shares
-	// none of the machinery below. It is dispatched here, before any of it, so
-	// that the reverse path is reached by exactly the configurations that
-	// always reached it: an [l3] table is the only way past this branch, and
-	// no configuration written before it existed has one.
+	// --- Engine A: layer-3 / paqet ([l3] table) ------------------------------
 	if cfg.L3.Enabled() {
 		runL3Tunnel(cfg, ctx, configPath)
 		return
 	}
-	// The [direct] stream tunnel is gone (v2.0.0). validateConfig refuses
-	// such a file before anything gets here, at start and on every reload;
-	// this is the same refusal for a path that reached runEngine some other
-	// way, so it never falls through to the reverse branch and dies with a
-	// message about [server] and [client] that says nothing of what is wrong.
+	// --- Removed engine: [direct] stream (v2.0.0) — never fall through ------
 	if cfg.Direct.Present() {
 		logger.Fatalf("%v", config.ErrDirectRemoved)
 		return
 	}
 
+	// --- Engine B: reverse tunnel ([server] Iran / [client] kharej) ---------
 	configType := ""
 	if cfg.Server.BindAddr != "" {
 		configType = "server"
@@ -221,7 +206,6 @@ func runEngine(cfg *config.Config, ctx context.Context, configPath string, apply
 		logger.Fatalf("neither server nor client configuration is properly set.")
 	}
 
-	// Determine whether to run as a server or client
 	switch configType {
 	case "server":
 		// Apply temporary TCP optimizations at startup

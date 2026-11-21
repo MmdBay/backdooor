@@ -8,6 +8,11 @@ package manage
 //  2. the tunnel SOCKS relay (the peer/kharej side can reach GitHub)
 //
 // A machine that has neither installs offline instead; see the README.
+//
+// Trust chain (load-bearing): Ed25519 over tag+SHA256SUMS (app.ReleaseSignedMessage),
+// then per-archive SHA256 — unsigned/mismatched tags are refused when
+// ReleasePublicKey is set. Related: updatecheck.go, updaterelay.go, updateweb.go,
+// migrate.go (post-install config fixes).
 
 import (
 	"archive/tar"
@@ -268,6 +273,9 @@ func newerVersion(remote, local string) bool {
 // the same regardless of how backpack was installed (release or git clone) —
 // the update itself always comes from the release assets.
 func CheckUpdate() (bool, string, error) {
+	if err := app.RefuseUpstreamTrust(); err != nil {
+		return false, "", err
+	}
 	tag, err := latestTag()
 	if err != nil {
 		return false, "", err
@@ -494,6 +502,9 @@ func extractBinaryTo(archive, dest string) error {
 func ApplyUpdate(logf func(string)) error {
 	if logf == nil {
 		logf = func(string) {}
+	}
+	if err := app.RefuseUpstreamTrust(); err != nil {
+		return err
 	}
 	tag, err := latestTag()
 	if err != nil {

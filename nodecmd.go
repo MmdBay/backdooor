@@ -44,6 +44,8 @@ func runNode(args []string) {
 		fmt.Print(nodeUsage)
 		os.Exit(2)
 	}
+	// Only `exec` remains. Older builds had setup/agent/leave; those are gone
+	// because the panel owns SSH — this host keeps no fleet state of its own.
 	switch args[0] {
 	case "exec":
 		nodeExec(args[1:])
