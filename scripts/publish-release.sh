@@ -82,7 +82,7 @@ EOF
     exit 2
   fi
   if ! command -v arm-linux-gnueabi-gcc >/dev/null 2>&1; then
-    echo "publish-release.sh: warning: arm-linux-gnueabi-gcc not found — armv5 build will fail (apt install gcc-arm-linux-gnueabi libc6-dev-armel-cross)" >&2
+    die "missing arm-linux-gnueabi-gcc on PATH (apt install gcc-arm-linux-gnueabi libc6-dev-armel-cross)"
   fi
   if ! gh auth status >/dev/null 2>&1; then
     die "gh is not authenticated — run: gh auth login"

@@ -48,6 +48,7 @@ if [[ -f "$PREFIX/lib/libpcap.a" && -f "$PREFIX/include/pcap.h" && "${FORCE:-0}"
 fi
 
 # LD_LIBRARY_PATH on some machines points at libraries that break xz and tar.
+_saved_ld_library_path="${LD_LIBRARY_PATH:-}"
 unset LD_LIBRARY_PATH
 
 WORK="$(mktemp -d)"
@@ -92,6 +93,11 @@ cd "libpcap-$VERSION"
 export CC
 [[ -n "${AR:-}" ]] && export AR
 [[ -n "${RANLIB:-}" ]] && export RANLIB
+# Cross toolchains installed outside apt's default ld.so paths need their host
+# libs (e.g. binutils) while configure tests the compiler.
+if [[ -n "${HOST:-}" && -n "${_saved_ld_library_path}" ]]; then
+  export LD_LIBRARY_PATH="$_saved_ld_library_path"
+fi
 STAGE="$WORK/stage"
 ./configure "${HOST_FLAG[@]}" --prefix="$STAGE" \
   --disable-shared --disable-dbus --disable-bluetooth --disable-usb --disable-netmap --disable-rdma \
